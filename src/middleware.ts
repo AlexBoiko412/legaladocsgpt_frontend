@@ -1,12 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-
 export async function middleware(req: NextRequest) {
-
     const token = req.cookies.get("token");
-    console.log(token);
-
+    console.log(token)
     if (!token) {
         return NextResponse.redirect(new URL("/login", req.url));
     }
@@ -15,9 +12,10 @@ export async function middleware(req: NextRequest) {
         const response = await fetch("http://localhost:8080/api/auth/validate", {
             method: "POST",
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token.value}`, // не забудь .value
                 "Content-Type": "application/json",
             },
+            credentials: "include",
         });
 
         if (!response.ok) {
@@ -25,12 +23,12 @@ export async function middleware(req: NextRequest) {
             return NextResponse.redirect(new URL("/login", req.url));
         }
 
-
         const userInfo = await response.json();
+
         const requestHeaders = new Headers(req.headers);
         requestHeaders.set("x-user-info", JSON.stringify(userInfo));
-        console.log(userInfo);
-        return NextResponse.next({ headers: requestHeaders });
+
+        return NextResponse.next({ request: { headers: requestHeaders } });
     } catch (err) {
         console.error("Middleware error:", err);
         return NextResponse.redirect(new URL("/login", req.url));
