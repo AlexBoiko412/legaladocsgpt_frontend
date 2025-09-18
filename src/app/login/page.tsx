@@ -62,6 +62,9 @@ export default function Login() {
                 <button type="submit" className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600">
                     Login
                 </button>
+                <button onClick={() => window.location.href = "http://localhost:8080/api/auth/oauth2/authorization/google"}>
+                    Login with Google
+                </button>
             </form>
         </div>
     );

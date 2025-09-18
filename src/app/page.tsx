@@ -13,9 +13,6 @@ export default function Home() {
           <Link href="/login" className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600">
             Login
           </Link>
-            <button onClick={() => window.location.href = "http://localhost:8080/api/auth/oauth2/authorization/google"}>
-                Login with Google
-            </button>
         </div>
       </div>
   );
