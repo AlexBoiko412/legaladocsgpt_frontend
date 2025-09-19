@@ -3,21 +3,19 @@ import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
     const token = req.cookies.get("token");
-    console.log(token)
-    if (!token) {
+    console.log("Middleware: ", token)
+
+    if (!token?.value) {
         return NextResponse.redirect(new URL("/login", req.url));
     }
 
     try {
         const response = await fetch("http://localhost:8080/api/auth/validate", {
-            method: "POST",
+            method: "GET",
             headers: {
-                Authorization: `Bearer ${token.value}`, // не забудь .value
-                "Content-Type": "application/json",
+                "Cookie": `token=${token.value}`,
             },
-            credentials: "include",
         });
-
         if (!response.ok) {
             console.error(`Token validation failed: ${response.status}`);
             return NextResponse.redirect(new URL("/login", req.url));
