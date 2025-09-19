@@ -1,0 +1,21 @@
+.navbar {
+    background-color: #0a0a0a;
+    padding: 1.5rem 5vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+}
+
+.navbar__links {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+}
+
+.navbar__user {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+}
