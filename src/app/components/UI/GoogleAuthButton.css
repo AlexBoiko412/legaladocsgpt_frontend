@@ -1,0 +1,15 @@
+.google_auth_button {
+    width: 100%;
+    padding: 0.5rem 2rem;
+    background-color: white;
+    border: 1px solid #9c9c9c;
+    color: #4a4a4a;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    transition: 0.2s;
+}
+
+.google_auth_button:hover {
+    background-color: #f6f6f6;
+}
