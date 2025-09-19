@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from "axios";
+import GoogleAuthButton from "@/components/UI/GoogleAuthButton";
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -59,12 +60,13 @@ export default function Login() {
                         required
                     />
                 </div>
-                <button type="submit" className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600">
-                    Login
-                </button>
-                <button onClick={() => window.location.href = "http://localhost:8080/api/auth/oauth2/authorization/google"}>
-                    Login with Google
-                </button>
+                <div className={"w-full flex flex-col gap-4"}>
+                    <button type="submit" className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                        Login
+                    </button>
+                    <GoogleAuthButton/>
+                </div>
+
             </form>
         </div>
     );
