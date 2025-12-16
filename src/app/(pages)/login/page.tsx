@@ -1,10 +1,9 @@
 'use client';
 
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import { useRouter } from 'next/navigation';
 import axios from "axios";
 import GoogleAuthButton from "@/components/UI/GoogleAuthButton";
-import {UserInfo} from "@/hooks/useUser";
 
 export default function Login() {
     const [username, setUsername] = useState('');
