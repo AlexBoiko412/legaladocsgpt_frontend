@@ -4,6 +4,7 @@ import "./Navbar.css";
 import Link from "next/link";
 import { User } from "lucide-react";
 import {UserInfo, useUser} from "@/hooks/useUser";
+import {LogoutButton} from "@/components/UI/Logout";
 
 
 export default function Navbar({ initialUser }: { initialUser: UserInfo }) {
@@ -22,7 +23,7 @@ export default function Navbar({ initialUser }: { initialUser: UserInfo }) {
                     <></>
                 ) : (initialUser || user) ? (
                     <li>
-                        <Link href={"/logout"}>Logout</Link>
+                        <LogoutButton>Logout</LogoutButton>
                     </li>
                 ): <>
                     <li>
