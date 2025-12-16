@@ -15,10 +15,11 @@ export function useUser() {
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+
         async function fetchUser() {
             try {
                 const res = await axios.get<UserInfo>("http://localhost:8080/api/auth/me", {
-                    withCredentials: true,
+                    withCredentials: true
                 });
                 setUser(res.data);
             } catch (err: any) {

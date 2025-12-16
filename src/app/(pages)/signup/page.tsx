@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useRouter } from 'next/navigation';
 import axios from "axios";
 import GoogleAuthButton from "@/components/UI/GoogleAuthButton";
@@ -12,6 +12,9 @@ export default function Signup() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+
+
         try {
             const response = await axios.post("http://localhost:8080/api/auth/signup", {
                 username,
