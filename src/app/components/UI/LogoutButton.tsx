@@ -2,8 +2,9 @@
 
 import Cookies from "js-cookie";
 import { logout } from "@/services/auth";
+import { ReactNode } from "react";
 
-export function LogoutButton({children}: { children: string }) {
+export function LogoutButton({children}: { children: ReactNode }) {
 
     const handleLogout = async () => {
         await logout();
