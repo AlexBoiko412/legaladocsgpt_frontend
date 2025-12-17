@@ -1,28 +1,24 @@
 'use client'
-import Cookies from "js-cookie";
-import { useState, useEffect } from "react"; // 1. Import hooks
+
+import {useUser} from "@/context/UserContext";
 
 export default function DashboardPage() {
-    const [userData, setUserData] = useState({
-        username: '',
-        email: '',
-        role: ''
-    });
-
-    useEffect(() => {
-        setUserData({
-            username: Cookies.get("username") || '',
-            email: Cookies.get("email") || '',
-            role: Cookies.get("role") || ''
-        });
-    }, []);
+    const {user, loading} = useUser()
 
     return (
-        <div className={"text-amber-50"}>
-            <h1>Welcome, {userData.username}</h1>
-            <p>Email: {userData.email}</p>
-            <p>Role: {userData.role}</p>
-            {userData.username === '' && <p>Loading user data...</p>}
+        <div className={"container mx-auto p-8 text-black"}>
+            {
+                loading &&
+                <p>Loading user data...</p>
+            }
+            {
+                user &&
+                <>
+                    <h1>Welcome, {user.username}</h1>
+                    <p>Email: {user.email}</p>
+                    <p>Role: {user.role}</p>
+                </>
+            }
         </div>
     );
 }
