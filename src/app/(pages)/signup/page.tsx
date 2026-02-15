@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import axios from "axios";
 import GoogleAuthButton from "@/components/UI/GoogleAuthButton";
 import { useUser } from "@/context/UserContext";
+import Link from "next/link";
 
 export default function Signup() {
     const [username, setUsername] = useState('');
@@ -23,9 +24,11 @@ export default function Signup() {
                 username,
                 email,
                 password
+            }, {
+                withCredentials: true
             });
 
-            console.log('Signup successful:', { username, email });
+            console.log('Signup successful for:', username);
             await refetchUser();
             router.push('/');
 
@@ -51,7 +54,7 @@ export default function Signup() {
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100">
             <form onSubmit={handleSubmit} className="bg-white p-8 rounded shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center">Signup</h2>
 
                 {error && <p className="text-red-500 text-sm text-center mb-4">{error}</p>}
 
@@ -67,7 +70,7 @@ export default function Signup() {
                     />
                 </div>
                 <div className="mb-4">
-                    <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
+                    <label htmlFor="username" className="block text-sm font-medium mb-1">Email</label>
                     <input
                         type="email"
                         id="email"
@@ -88,13 +91,18 @@ export default function Signup() {
                         required
                     />
                 </div>
+
+
                 <div className={"w-full flex flex-col gap-4"}>
-                    <button type="submit" className="w-full py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-                        Sign Up
+                    <button type="submit" className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600">
+                        Signup
                     </button>
                     <GoogleAuthButton/>
                 </div>
 
+                <div className={"text-center cursor-pointer mt-4 text-primary hover:underline"}>
+                    <Link href={"/login"}>Login</Link>
+                </div>
             </form>
         </div>
     );

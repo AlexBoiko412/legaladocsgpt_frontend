@@ -4,7 +4,18 @@ import Cookies from "js-cookie";
 import { logout } from "@/services/auth";
 import { ReactNode } from "react";
 
-export function LogoutButton({children}: { children: ReactNode }) {
+interface ILogoutButtonProps {
+    children: ReactNode,
+    onClick: () => void,
+    className: string
+}
+
+export function LogoutButton(
+    {
+        children,
+        onClick,
+        className
+    }: ILogoutButtonProps) {
 
     const handleLogout = async () => {
         await logout();
@@ -17,8 +28,15 @@ export function LogoutButton({children}: { children: ReactNode }) {
     };
 
     return (
-        <button className={"text-amber-50 cursor-pointer"} onClick={handleLogout}>
+        <button
+            className={className}
+            onClick={() => {
+                onClick();
+                handleLogout()
+            }}
+        >
             {children}
+
         </button>
     );
 }

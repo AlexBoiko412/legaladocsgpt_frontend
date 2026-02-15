@@ -33,6 +33,9 @@ export default function Navbar() {
             </div>
 
             <div className="flex items-center gap-6">
+                <Link href="/documents" className="text-text-light hover:text-primary transition-colors">
+                    Documents
+                </Link>
                 <Link href="/dashboard" className="text-text-light hover:text-primary transition-colors">
                     Dashboard
                 </Link>
@@ -68,14 +71,12 @@ export default function Navbar() {
                                     Dashboard
                                 </Link>
                                 <div className="border-t my-1"></div>
-                                <LogoutButton>
-                                    <div
-                                        className="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                        onClick={() => setIsDropdownOpen(false)}
-                                    >
-                                        <LogOut className="mr-2 h-4 w-4" />
-                                        Logout
-                                    </div>
+                                <LogoutButton
+                                    onClick={() => setIsDropdownOpen(false)}
+                                    className="container flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                                >
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    Logout
                                 </LogoutButton>
                             </div>
                         )}

@@ -5,6 +5,8 @@ import {useUser} from "@/context/UserContext";
 export default function DashboardPage() {
     const {user, loading} = useUser()
 
+
+
     return (
         <div className={"container mx-auto p-8 text-black"}>
             {

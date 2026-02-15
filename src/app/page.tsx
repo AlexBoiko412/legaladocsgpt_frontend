@@ -2,6 +2,8 @@
 
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
+import {useEffect} from "react";
+import axios from "axios";
 
 export default function Home() {
     const features = [
@@ -26,6 +28,27 @@ export default function Home() {
             description: 'Low barrier to entry for new users to try out the service.',
         }
     ];
+
+    useEffect(() => {
+        async function fetchDocumentGenerate() {
+            try {
+                const response = await axios.get("http://localhost:8080/api/documents/info", {
+                    withCredentials: true
+                });
+
+                console.log('Doc Gen info:', response.data);
+
+            } catch (error: unknown) {
+                if (axios.isAxiosError(error)) {
+                    const message = error.response?.data?.message || 'Login failed. Please try again.';
+                    console.info('Axios Error:', message);
+                } else {
+                    console.info('Error:', error);
+                }
+            }
+        }
+        fetchDocumentGenerate();
+    }, []);
 
     return (
         <div className="bg-white text-text-DEFAULT">

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import axios from "axios";
 import GoogleAuthButton from "@/components/UI/GoogleAuthButton";
 import { useUser } from "@/context/UserContext";
+import Link from "next/link";
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -87,6 +88,9 @@ export default function Login() {
                     <GoogleAuthButton/>
                 </div>
 
+                <div className={"text-center cursor-pointer mt-4 text-primary hover:underline"}>
+                    <Link href={"/signup"}>Signup</Link>
+                </div>
             </form>
         </div>
     );

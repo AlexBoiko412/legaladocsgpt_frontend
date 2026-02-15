@@ -32,7 +32,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
             setUser(res.data);
             setError(null);
         } catch (err: any) {
-            setError(err.message || "Failed to fetch user");
+            setError(err.response?.data?.message|| "Failed to fetch user");
             setUser(null);
         } finally {
             setLoading(false);
