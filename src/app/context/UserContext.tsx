@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import axios from 'axios';
 import {authApi} from "@/lib/api";
 
 export interface UserInfo {

@@ -2,8 +2,6 @@
 
 import Link from 'next/link';
 import { CheckCircle } from 'lucide-react';
-import {useEffect} from "react";
-import axios from "axios";
 
 export default function Home() {
     const features = [

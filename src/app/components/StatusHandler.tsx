@@ -1,8 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
-import {Loader2, CheckCircle, AlertCircle, FileText, Download, RefreshCw, Wand2} from 'lucide-react';
+import {Loader2, CheckCircle, AlertCircle, Download, RefreshCw, Wand2} from 'lucide-react';
 import { useRouter } from "next/navigation";
 import WordEditor from "@/components/WordEditor";
 import {documentsApi, storageApi} from "@/lib/api";

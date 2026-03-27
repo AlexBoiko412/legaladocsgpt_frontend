@@ -3,8 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TemplateDefinition } from '@/types/template';
-import axios from 'axios';
-import {documentsApi, templatesApi} from "@/lib/api";
+import {templatesApi} from "@/lib/api";
 
 export default function DocumentRequestForm({ onSubmit, isLoading }: {
     onSubmit: (data: any) => void,

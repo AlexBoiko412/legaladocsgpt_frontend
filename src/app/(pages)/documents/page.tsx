@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Edit3, Search, Plus, Loader2, AlertCircle, FileX, Clock, Trash2 } from 'lucide-react';
-import axios from "axios";
 import DocumentTitle from "@/components/DocumentTitle";
 import {documentsApi} from "@/lib/api";
 

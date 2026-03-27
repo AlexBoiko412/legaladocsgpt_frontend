@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { DocumentEditor, IConfig } from "@onlyoffice/document-editor-react";
-import axios from "axios";
 import { Loader2 } from "lucide-react";
 import {documentsApi} from "@/lib/api";
 
