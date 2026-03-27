@@ -1,8 +1,8 @@
 'use client'
 
 import Cookies from "js-cookie";
-import { logout } from "@/services/auth";
 import { ReactNode } from "react";
+import {authApi} from "@/lib/api";
 
 interface ILogoutButtonProps {
     children: ReactNode,
@@ -18,7 +18,7 @@ export function LogoutButton(
     }: ILogoutButtonProps) {
 
     const handleLogout = async () => {
-        await logout();
+        await authApi.logout();
 
         Cookies.remove("username");
         Cookies.remove("email");

@@ -6,6 +6,7 @@ import axios from "axios";
 import GoogleAuthButton from "@/components/UI/GoogleAuthButton";
 import { useUser } from "@/context/UserContext";
 import Link from "next/link";
+import {authApi} from "@/lib/api";
 
 export default function Login() {
     const [username, setUsername] = useState('');
@@ -19,12 +20,9 @@ export default function Login() {
         setError('');
 
         try {
-            await axios.post("http://localhost:8080/api/auth/login", {
+            await authApi.login({
                 username,
-                email: null,
                 password
-            }, {
-                withCredentials: true
             });
 
             console.log('Login successful for:', username);

@@ -1,107 +1,131 @@
 "use client";
 
-import { useEditor, EditorContent, Editor } from '@tiptap/react';
-import StarterKit from '@tiptap/starter-kit';
-import Underline from '@tiptap/extension-underline';
-import TextAlign from '@tiptap/extension-text-align';
-import { useEffect } from 'react';
+import React, { useMemo } from "react";
+import {
+    EditorRoot,
+    EditorContent,
+    EditorCommand,
+    EditorCommandItem,
+    EditorCommandEmpty,
+    EditorCommandList,
+    EditorBubble,
+    handleCommandNavigation,
+    useEditor // We need this to get the instance
+} from "novel";
+import { generateJSON } from "@tiptap/html";
 import {
     Bold, Italic, Underline as UnderlineIcon,
-    AlignLeft, AlignCenter, AlignRight, AlignJustify,
-    List, ListOrdered, Heading1, Heading2, Heading3,
-    Undo, Redo, Quote, Minus
-} from 'lucide-react';
+    AlignLeft, AlignCenter, AlignRight, AlignJustify
+} from "lucide-react";
+import { defaultExtensions } from "./editorExtensions/extensions";
+import { slashCommand, suggestionItems } from "./editorExtensions/slash-command";
 
 interface LegalEditorProps {
     content: string;
-    onChange: (newContent: string) => void;
+    onChange: (html: string) => void;
 }
 
-const MenuBar = ({ editor }: { editor: Editor | null }) => {
-    if (!editor) return null;
+const LegalEditor = ({ content, onChange }: LegalEditorProps) => {
+    const extensions = useMemo(() => [...defaultExtensions, slashCommand], []);
 
-    const btnClass = (active: boolean) =>
-        `p-2 rounded transition-colors ${active ? 'bg-blue-100 text-blue-600' : 'text-slate-600 hover:bg-slate-100'}`;
+    const initialJSON = useMemo(() => {
+        if (!content) return { type: "doc", content: [{ type: "paragraph" }] };
+        try {
+            return generateJSON(content, extensions as any);
+        } catch (e) {
+            return { type: "doc", content: [{ type: "paragraph" }] };
+        }
+    }, [content, extensions]);
 
     return (
-        <div className="flex flex-wrap items-center gap-1 p-2 border-b bg-white sticky top-0 z-20 rounded-t-lg">
-            <button onClick={() => editor.chain().focus().undo().run()} className={btnClass(false)} title="Undo"><Undo size={18}/></button>
-            <button onClick={() => editor.chain().focus().redo().run()} className={btnClass(false)} title="Redo"><Redo size={18}/></button>
+        <div className="relative w-full max-w-[210mm] mx-auto bg-white shadow-2xl border border-slate-200 min-h-[297mm] mb-10">
+            <EditorRoot>
+                <EditorContent
+                    initialContent={initialJSON}
+                    extensions={extensions as any}
+                    className="relative w-full max-w-[210mm] mx-auto bg-white shadow-2xl border border-slate-200 min-h-[297mm] mb-10"
+                    onUpdate={({ editor }) => {
+                        onChange(editor.getHTML());
+                    }}
+                    editorProps={{
+                        attributes: {
+                            class: "prose prose-slate prose-lg focus:outline-none p-[20mm] legal-document-viewer",
+                        },
+                    }}
+                >
+                    {/* --- THE BUBBLE MENU (Floating Buttons) --- */}
+                    <EditorBubble className="flex w-fit max-w-[90vw] overflow-hidden rounded-md border border-muted bg-white p-1 shadow-xl animate-in fade-in zoom-in duration-200">
+                        {/* We use a simple helper component here because EditorBubble
+                            passes the editor instance to its children.
+                        */}
+                        <BubbleMenuContent />
+                    </EditorBubble>
 
-            <div className="w-px h-6 bg-slate-200 mx-1" />
-
-            <button onClick={() => editor.chain().focus().toggleBold().run()} className={btnClass(editor.isActive('bold'))}><Bold size={18}/></button>
-            <button onClick={() => editor.chain().focus().toggleItalic().run()} className={btnClass(editor.isActive('italic'))}><Italic size={18}/></button>
-            <button onClick={() => editor.chain().focus().toggleUnderline().run()} className={btnClass(editor.isActive('underline'))}><UnderlineIcon size={18}/></button>
-
-            <div className="w-px h-6 bg-slate-200 mx-1" />
-
-            <button onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()} className={btnClass(editor.isActive('heading', { level: 1 }))}><Heading1 size={18}/></button>
-            <button onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()} className={btnClass(editor.isActive('heading', { level: 2 }))}><Heading2 size={18}/></button>
-            <button onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()} className={btnClass(editor.isActive('heading', { level: 3 }))}><Heading3 size={18}/></button>
-
-            <div className="w-px h-6 bg-slate-200 mx-1" />
-
-            <button onClick={() => editor.chain().focus().setTextAlign('left').run()} className={btnClass(editor.isActive({ textAlign: 'left' }))}><AlignLeft size={18}/></button>
-            <button onClick={() => editor.chain().focus().setTextAlign('center').run()} className={btnClass(editor.isActive({ textAlign: 'center' }))}><AlignCenter size={18}/></button>
-            <button onClick={() => editor.chain().focus().setTextAlign('right').run()} className={btnClass(editor.isActive({ textAlign: 'right' }))}><AlignRight size={18}/></button>
-            <button onClick={() => editor.chain().focus().setTextAlign('justify').run()} className={btnClass(editor.isActive({ textAlign: 'justify' }))}><AlignJustify size={18}/></button>
-
-            <div className="w-px h-6 bg-slate-200 mx-1" />
-
-            <button onClick={() => editor.chain().focus().toggleBulletList().run()} className={btnClass(editor.isActive('bulletList'))}><List size={18}/></button>
-            <button onClick={() => editor.chain().focus().toggleOrderedList().run()} className={btnClass(editor.isActive('orderedList'))}><ListOrdered size={18}/></button>
-            <button onClick={() => editor.chain().focus().toggleBlockquote().run()} className={btnClass(editor.isActive('blockquote'))}><Quote size={18}/></button>
-            <button onClick={() => editor.chain().focus().setHorizontalRule().run()} className={btnClass(false)}><Minus size={18}/></button>
+                    {/* --- THE SLASH COMMAND MENU --- */}
+                    <EditorCommand className="z-50 h-auto max-h-[330px] w-72 overflow-y-auto rounded-md border bg-white px-1 py-2 shadow-md">
+                        <EditorCommandEmpty className="px-2 text-slate-500">No results</EditorCommandEmpty>
+                        <EditorCommandList>
+                            {suggestionItems.map((item: any) => (
+                                <EditorCommandItem
+                                    value={item.title}
+                                    onCommand={(val) => item.command?.(val)}
+                                    className="flex w-full items-center space-x-2 rounded-md px-2 py-1 text-left text-sm hover:bg-slate-100 cursor-pointer"
+                                    key={item.title}
+                                >
+                                    <div className="flex h-10 w-10 items-center justify-center rounded-md border bg-slate-50">{item.icon}</div>
+                                    <div>
+                                        <p className="font-medium">{item.title}</p>
+                                        <p className="text-xs text-slate-400">{item.description}</p>
+                                    </div>
+                                </EditorCommandItem>
+                            ))}
+                        </EditorCommandList>
+                    </EditorCommand>
+                </EditorContent>
+            </EditorRoot>
         </div>
     );
 };
 
-const LegalEditor = ({ content, onChange }: LegalEditorProps) => {
-    const editor = useEditor({
-        extensions: [
-            StarterKit,
-            Underline,
-            TextAlign.configure({
-                types: ['heading', 'paragraph'],
-            }),
-        ],
-        content: content,
-        immediatelyRender: false,
-        onCreate: ({ editor }) => {
-            onChange(editor.getHTML());
-        },
-        onUpdate: ({ editor }) => {
-            onChange(editor.getHTML());
-        },
-        editorProps: {
-            attributes: {
-                class: 'prose prose-slate max-w-none focus:outline-none min-h-[1000px] text-justify',
-            },
-        },
-    });
-
-    useEffect(() => {
-        if (editor && content && editor.isEmpty) {
-            editor.commands.setContent(content);
-        }
-    }, [content, editor]);
-
+// --- HELPER COMPONENT FOR BUBBLE MENU LOGIC ---
+const BubbleMenuContent = () => {
+    const { editor } = useEditor();
     if (!editor) return null;
 
-    return (
-        <div className="w-full flex flex-col border rounded-lg shadow-xl bg-slate-50 overflow-hidden">
-            <MenuBar editor={editor} />
+    const btnClass = (active: boolean) =>
+        `p-2 transition-colors duration-200 ${active ? 'text-blue-600 bg-blue-50' : 'text-slate-600 hover:bg-slate-100'}`;
 
-            <div className="p-4 md:p-8 overflow-y-auto max-h-[80vh] flex justify-center bg-slate-200">
-                <div className="bg-white w-full max-w-[210mm] min-h-[297mm] p-[20mm] shadow-md">
-                    <EditorContent editor={editor} />
-                </div>
+    const setAlign = (alignment: 'left' | 'center' | 'right' | 'justify') => {
+        (editor.chain() as any).focus().setTextAlign(alignment).run();
+    };
+
+    return (
+        <div className="flex items-center divide-x divide-slate-200 bg-white">
+            {/* Formatting Group */}
+            <div className="flex items-center px-1">
+                <button type="button" onClick={() => editor.chain().focus().toggleBold().run()} className={btnClass(editor.isActive('bold'))}>
+                    <Bold size={16} />
+                </button>
+                <button type="button" onClick={() => editor.chain().focus().toggleUnderline().run()} className={btnClass(editor.isActive('underline'))}>
+                    <UnderlineIcon size={16} />
+                </button>
             </div>
 
-            <div className="p-2 bg-white border-t text-xs text-slate-400 flex justify-between">
-                <span>LegalDocsGPT Editor v2.0</span>
-                <span>{editor.storage.characterCount?.characters?.() || 0} characters</span>
+            {/* Alignment Group */}
+            <div className="flex items-center px-1">
+                <button type="button" onClick={() => setAlign('left')} className={btnClass(editor.isActive({ textAlign: 'left' }))}>
+                    <AlignLeft size={16} />
+                </button>
+                <button type="button" onClick={() => setAlign('center')} className={btnClass(editor.isActive({ textAlign: 'center' }))}>
+                    <AlignCenter size={16} />
+                </button>
+                {/* --- NEW RIGHT ALIGN BUTTON --- */}
+                <button type="button" onClick={() => setAlign('right')} className={btnClass(editor.isActive({ textAlign: 'right' }))}>
+                    <AlignRight size={16} />
+                </button>
+                <button type="button" onClick={() => setAlign('justify')} className={btnClass(editor.isActive({ textAlign: 'justify' }))}>
+                    <AlignJustify size={16} />
+                </button>
             </div>
         </div>
     );

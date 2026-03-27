@@ -29,27 +29,6 @@ export default function Home() {
         }
     ];
 
-    useEffect(() => {
-        async function fetchDocumentGenerate() {
-            try {
-                const response = await axios.get("http://localhost:8080/api/documents/info", {
-                    withCredentials: true
-                });
-
-                console.log('Doc Gen info:', response.data);
-
-            } catch (error: unknown) {
-                if (axios.isAxiosError(error)) {
-                    const message = error.response?.data?.message || 'Login failed. Please try again.';
-                    console.info('Axios Error:', message);
-                } else {
-                    console.info('Error:', error);
-                }
-            }
-        }
-        fetchDocumentGenerate();
-    }, []);
-
     return (
         <div className="bg-white text-text-DEFAULT">
             <section className="text-center py-20 px-4">

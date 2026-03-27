@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TemplateDefinition } from '@/types/template';
 import axios from 'axios';
+import {documentsApi, templatesApi} from "@/lib/api";
 
 export default function DocumentRequestForm({ onSubmit, isLoading }: {
     onSubmit: (data: any) => void,
@@ -15,7 +16,7 @@ export default function DocumentRequestForm({ onSubmit, isLoading }: {
     const { register, handleSubmit, reset, setValue } = useForm();
 
     useEffect(() => {
-        axios.get('http://localhost:8080/api/documents/templates', { withCredentials: true })
+        templatesApi.getAll()
             .then(res => {
                 setTemplates(res.data);
                 if (res.data.length > 0) {

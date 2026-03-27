@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
+import {authApi} from "@/lib/api";
 
 export interface UserInfo {
     username: string;
@@ -26,9 +27,7 @@ export function UserProvider({ children }: { children: ReactNode }) {
     const fetchUser = async () => {
         setLoading(true);
         try {
-            const res = await axios.get<UserInfo>("http://localhost:8080/api/auth/me", {
-                withCredentials: true
-            });
+            const res = await authApi.me()
             setUser(res.data);
             setError(null);
         } catch (err: any) {
