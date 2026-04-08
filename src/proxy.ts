@@ -1,34 +1,43 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { Roles } from "@/lib/constants";
+
+const API_URL = process.env.API_URL ?? process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080';
 
 export async function proxy(req: NextRequest) {
     const token = req.cookies.get("token")?.value;
 
-    console.log(token)
     if (!token) {
         return NextResponse.redirect(new URL("/login", req.url));
     }
 
     try {
-        const response = await fetch("http://localhost:8080/api/auth/validate", {
-            credentials: "include",
+        const response = await fetch(`${API_URL}/api/auth/validate`, {
             headers: {
                 "Cookie": `token=${token}`
             }
-        })
+        });
+
         if (!response.ok) {
-            console.log("Validation failed with status:", response.status);
             return NextResponse.redirect(new URL("/login", req.url));
+        }
+
+        if (req.nextUrl.pathname.startsWith("/admin")) {
+            const user = await response.json();
+            if (user.role !== Roles.ADMIN) {
+                return NextResponse.redirect(new URL("/", req.url));
+            }
         }
 
         return NextResponse.next();
 
-    } catch (e: any) {
-        console.error("Network error or server unreachable", e);
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : String(e);
+        console.error("Auth validation failed — network error or server unreachable:", message);
         return NextResponse.redirect(new URL("/login", req.url));
     }
 }
 
 export const config = {
-    matcher: ["/dashboard/:path*", "/profile/:path*", "/documents/:path*"],
+    matcher: ["/dashboard/:path*", "/profile/:path*", "/documents/:path*", "/admin/:path*"],
 };

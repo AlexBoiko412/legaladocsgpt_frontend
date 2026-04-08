@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Pencil, Check, X } from 'lucide-react';
-import {documentsApi} from "@/lib/api";
+import { documentsApi } from "@/lib/api";
 
 interface DocumentTitleProps {
     jobId: string;
@@ -57,6 +57,7 @@ export default function DocumentTitle({ jobId, initialTitle, onRenamed }: Docume
                     onKeyDown={handleKeyDown}
                     onBlur={handleSave}
                     disabled={saving}
+                    aria-label="Document title"
                     className="border border-blue-400 rounded px-2 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
                     maxLength={100}
                 />
@@ -64,11 +65,16 @@ export default function DocumentTitle({ jobId, initialTitle, onRenamed }: Docume
                     onMouseDown={e => e.preventDefault()}
                     onClick={handleSave}
                     disabled={saving}
-                        className="text-green-600 hover:text-green-700">
+                    aria-label="Save title"
+                    className="text-green-600 hover:text-green-700"
+                >
                     <Check size={14} />
                 </button>
-                <button onClick={() => { setValue(initialTitle); setEditing(false); }}
-                        className="text-slate-400 hover:text-slate-600">
+                <button
+                    onClick={() => { setValue(initialTitle); setEditing(false); }}
+                    aria-label="Cancel rename"
+                    className="text-slate-400 hover:text-slate-600"
+                >
                     <X size={14} />
                 </button>
             </div>
@@ -80,11 +86,12 @@ export default function DocumentTitle({ jobId, initialTitle, onRenamed }: Docume
             <span className="text-sm font-medium text-slate-700">{value}</span>
             <button
                 onClick={() => setEditing(true)}
+                aria-label={`Rename "${value}"`}
                 className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-slate-600 transition-opacity"
             >
                 <Pencil size={13} />
             </button>
-            {error && <span className="text-red-500 text-xs">{error}</span>}
+            {error && <span className="text-red-500 text-xs" role="alert">{error}</span>}
         </div>
     );
 }

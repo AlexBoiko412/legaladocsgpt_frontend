@@ -1,22 +1,28 @@
 "use client";
+
 import { useRouter } from 'next/navigation';
-import DocumentRequestForm from '@/components/DocumentRequestForm';
 import { useState } from "react";
-import {documentsApi} from "@/lib/api";
+import axios from 'axios';
+import DocumentRequestForm from '@/components/DocumentRequestForm';
+import { documentsApi } from "@/lib/api";
+import { GenerateFormData } from '@/types/api';
 
 export default function GeneratePage() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const router = useRouter();
 
-    const handleFormSubmit = async (formData: any) => {
+    const handleFormSubmit = async (formData: GenerateFormData) => {
         setIsLoading(true);
         setError(null);
         try {
             const response = await documentsApi.generate(formData);
             router.push(`/documents/${response.data.jobId}`);
-        } catch (err: any) {
-            setError(err.response?.data?.message || "Generation failed. Please try again.");
+        } catch (err: unknown) {
+            const message = axios.isAxiosError(err)
+                ? err.response?.data?.message || 'Generation failed. Please try again.'
+                : 'Generation failed. Please try again.';
+            setError(message);
         } finally {
             setIsLoading(false);
         }

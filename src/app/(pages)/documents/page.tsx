@@ -1,12 +1,14 @@
 "use client";
+
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Edit3, Search, Plus, Loader2, AlertCircle, FileX, Clock, Trash2 } from 'lucide-react';
 import DocumentTitle from "@/components/DocumentTitle";
-import {documentsApi} from "@/lib/api";
+import { documentsApi } from "@/lib/api";
+import { DocumentListItem } from "@/types/api";
 
 export default function DocumentListPage() {
-    const [docs, setDocs] = useState<any[]>([]);
+    const [docs, setDocs] = useState<DocumentListItem[]>([]);
     const [search, setSearch] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -20,8 +22,9 @@ export default function DocumentListPage() {
             try {
                 const response = await documentsApi.getAll(search);
                 setDocs(response.data);
-            } catch (err: any) {
-                setError(err.response?.data?.message || "Could not load documents.");
+            } catch (err: unknown) {
+                const message = err instanceof Error ? err.message : "Could not load documents.";
+                setError(message);
             } finally {
                 setIsLoading(false);
             }
@@ -37,8 +40,9 @@ export default function DocumentListPage() {
             await documentsApi.delete(id);
             setDocs(prev => prev.filter(d => d.jobId !== id));
             setIsDeleting(null);
-        } catch (err: any) {
-            setError(err.response?.data?.message || "Could not delete document.");
+        } catch (err: unknown) {
+            const message = err instanceof Error ? err.message : "Could not delete document.";
+            setError(message);
         } finally {
             setIsDeleteLoading(false);
         }
@@ -104,7 +108,7 @@ export default function DocumentListPage() {
                         </tr>
                         </thead>
                         <tbody>
-                        {docs.map((doc: any) => (
+                        {docs.map((doc) => (
                             <tr key={doc.jobId} className="border-b hover:bg-slate-50 transition-colors group">
                                 <td className="p-4">
                                     <DocumentTitle
@@ -119,15 +123,15 @@ export default function DocumentListPage() {
                                     <div className="text-xs text-slate-400 font-mono mt-0.5">{doc.jobId}</div>
                                 </td>
                                 <td className="p-4">
-                                        <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
-                                            doc.status === 'COMPLETED'
-                                                ? 'bg-green-100 text-green-700'
-                                                : doc.status === 'FAILED'
-                                                    ? 'bg-red-100 text-red-700'
-                                                    : 'bg-amber-100 text-amber-700 animate-pulse'
-                                        }`}>
-                                            {doc.status}
-                                        </span>
+                                    <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+                                        doc.status === 'COMPLETED'
+                                            ? 'bg-green-100 text-green-700'
+                                            : doc.status === 'FAILED'
+                                                ? 'bg-red-100 text-red-700'
+                                                : 'bg-amber-100 text-amber-700 animate-pulse'
+                                    }`}>
+                                        {doc.status}
+                                    </span>
                                 </td>
                                 <td className="p-4 text-slate-500 text-sm">
                                     <div>
@@ -151,14 +155,14 @@ export default function DocumentListPage() {
                                         <Link
                                             href={`/documents/${doc.jobId}`}
                                             className="p-2 hover:bg-blue-50 text-blue-600 rounded transition-colors"
-                                            title="Open editor"
+                                            aria-label={`Open editor for ${doc.title || 'Untitled'}`}
                                         >
                                             <Edit3 size={18} />
                                         </Link>
                                         <button
                                             onClick={() => setIsDeleting(doc.jobId)}
                                             className="p-2 hover:bg-red-50 text-red-500 rounded transition-colors"
-                                            title="Delete document"
+                                            aria-label={`Delete ${doc.title || 'Untitled'}`}
                                         >
                                             <Trash2 size={18} />
                                         </button>
@@ -171,7 +175,6 @@ export default function DocumentListPage() {
                 )}
             </div>
 
-            {/* Delete confirmation modal */}
             {isDeleting && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
                     <div className="bg-white p-6 rounded-xl max-w-sm w-full shadow-2xl">

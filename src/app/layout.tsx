@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from "@/components/Navbar";
 import { UserProvider } from "@/context/UserContext";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -19,15 +20,17 @@ export default function RootLayout({
     return (
         <html lang="en">
         <body className={inter.className}>
-        <UserProvider>
-            <Navbar />
-            <main className="pt-16 min-h-screen bg-white">
-                {children}
-            </main>
-            <footer className="text-center py-8 bg-text-DEFAULT text-white">
-                <p>&copy; {new Date().getFullYear()} LegaldocsGPT. All rights reserved.</p>
-            </footer>
-        </UserProvider>
+        <ErrorBoundary>
+            <UserProvider>
+                <Navbar />
+                <main className="pt-16 min-h-screen bg-white">
+                    {children}
+                </main>
+                <footer className="text-center py-8 bg-text-DEFAULT text-white">
+                    <p>&copy; {new Date().getFullYear()} LegaldocsGPT. All rights reserved.</p>
+                </footer>
+            </UserProvider>
+        </ErrorBoundary>
         </body>
         </html>
     );

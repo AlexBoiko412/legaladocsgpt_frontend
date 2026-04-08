@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { DocumentEditor, IConfig } from "@onlyoffice/document-editor-react";
 import { Loader2 } from "lucide-react";
-import {documentsApi} from "@/lib/api";
+import { documentsApi } from "@/lib/api";
 
 interface EditorConfig {
     document: {
@@ -31,15 +31,16 @@ interface EditorConfig {
 
 interface WordEditorProps {
     jobId: string;
-    refreshKey?: number;   // Added to force re-init
+    refreshKey?: number;
 }
+
+const ONLYOFFICE_URL = process.env.NEXT_PUBLIC_ONLYOFFICE_URL ?? 'http://localhost:8089/';
 
 export default function WordEditor({ jobId, refreshKey = 0 }: WordEditorProps) {
     const [editorConfig, setEditorConfig] = useState<EditorConfig | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
-    // Fetch fresh config whenever jobId OR refreshKey changes
     useEffect(() => {
         setLoading(true);
         setEditorConfig(null);
@@ -50,8 +51,7 @@ export default function WordEditor({ jobId, refreshKey = 0 }: WordEditorProps) {
                 setEditorConfig(res.data);
                 setLoading(false);
             })
-            .catch((err) => {
-                console.error("Editor config error:", err);
+            .catch(() => {
                 setError("Failed to load editor configuration.");
                 setLoading(false);
             });
@@ -60,18 +60,15 @@ export default function WordEditor({ jobId, refreshKey = 0 }: WordEditorProps) {
     useEffect(() => {
         return () => {
             try {
-                if (window.DocEditor && window.DocEditor.instances) {
-                    const instance = window.DocEditor.instances["docxEditor"];
-                    if (instance && typeof instance.destroyEditor === "function") {
-                        console.log("Destroying previous OnlyOffice editor instance");
-                        instance.destroyEditor();
-                    }
+                const instance = window.DocEditor?.instances["docxEditor"];
+                if (instance && typeof instance.destroyEditor === "function") {
+                    instance.destroyEditor();
                 }
-            } catch (e) {
-                console.warn("Error destroying OnlyOffice instance:", e);
+            } catch {
+                // Ignore cleanup errors — editor may already be destroyed
             }
         };
-    }, [refreshKey]);   // Run cleanup on every refresh
+    }, [refreshKey]);
 
     if (error) {
         return (
@@ -109,19 +106,13 @@ export default function WordEditor({ jobId, refreshKey = 0 }: WordEditorProps) {
             },
         },
         token: editorConfig.token,
-        events: {
-            onDocumentReady: () => {
-                console.log("OnlyOffice Editor is ready (key:", editorConfig.document.key, ")");
-            },
-            onAppReady: () => console.log("OnlyOffice App is ready"),
-        },
     };
 
     return (
         <div className="w-full h-[800px] border rounded-xl overflow-hidden shadow-lg">
             <DocumentEditor
                 id="docxEditor"
-                documentServerUrl="http://localhost:8089/"
+                documentServerUrl={ONLYOFFICE_URL}
                 config={config}
             />
         </div>

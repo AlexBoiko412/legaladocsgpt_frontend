@@ -12,3 +12,8 @@ export interface TemplateDefinition {
     description: string;
     fields: TemplateField[];
 }
+
+export interface AdminTemplate extends TemplateDefinition {
+    systemPrompt: string;
+    docxPath: string;
+}

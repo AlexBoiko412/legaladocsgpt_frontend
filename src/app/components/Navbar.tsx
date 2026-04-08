@@ -5,6 +5,7 @@ import Link from "next/link";
 import { User, LogOut, LayoutDashboard, UserCircle } from "lucide-react";
 import { useUser } from "@/context/UserContext";
 import { LogoutButton } from "@/components/UI/LogoutButton";
+import { Roles } from "@/lib/constants";
 
 export default function Navbar() {
     const { user, loading } = useUser();
@@ -39,7 +40,13 @@ export default function Navbar() {
                 <Link href="/dashboard" className="text-text-light hover:text-primary transition-colors">
                     Dashboard
                 </Link>
-
+                {user?.role === Roles.ADMIN && (
+                    <Link href="/admin/templates"
+                          className="text-amber-600 hover:text-amber-700 font-medium transition-colors"
+                          onClick={() => setIsDropdownOpen(false)}>
+                        Admin
+                    </Link>
+                )}
                 {loading ? (
                     <div className="h-8 w-24 bg-gray-200 rounded animate-pulse"></div>
                 ) : user ? (
