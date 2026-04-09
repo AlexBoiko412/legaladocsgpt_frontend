@@ -30,69 +30,69 @@ export default function DashboardPage() {
 
             {/* Header */}
             <div>
-                <h1 className="text-3xl font-bold text-slate-900">
+                <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">
                     Welcome back, {user.username}
                 </h1>
-                <p className="mt-1 text-slate-500">Here&apos;s a quick overview of your account.</p>
+                <p className="mt-1 text-slate-500 dark:text-slate-400">Here&apos;s a quick overview of your account.</p>
             </div>
 
             {/* Quick actions */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <Link
                     href="/documents/generate"
-                    className="group flex items-center gap-4 p-5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 transition-colors"
+                    className="group flex items-center gap-4 p-5 rounded-xl border border-indigo-200 dark:border-indigo-800 bg-indigo-50 dark:bg-indigo-900/20 hover:bg-indigo-100 dark:hover:bg-indigo-900/30 transition-colors"
                 >
                     <div className="flex items-center justify-center w-11 h-11 rounded-lg bg-indigo-600 text-white shrink-0">
                         <Plus size={20} />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-indigo-900">New Document</p>
-                        <p className="text-sm text-indigo-600">Generate a legal draft with AI</p>
+                        <p className="font-semibold text-indigo-900 dark:text-indigo-300">New Document</p>
+                        <p className="text-sm text-indigo-600 dark:text-indigo-400">Generate a legal draft with AI</p>
                     </div>
                     <ArrowRight size={16} className="text-indigo-400 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
 
                 <Link
                     href="/documents"
-                    className="group flex items-center gap-4 p-5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-colors"
+                    className="group flex items-center gap-4 p-5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
                 >
-                    <div className="flex items-center justify-center w-11 h-11 rounded-lg bg-slate-100 text-slate-600 shrink-0">
+                    <div className="flex items-center justify-center w-11 h-11 rounded-lg bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 shrink-0">
                         <FileText size={20} />
                     </div>
                     <div className="flex-1 min-w-0">
-                        <p className="font-semibold text-slate-900">My Documents</p>
-                        <p className="text-sm text-slate-500">View and manage your drafts</p>
+                        <p className="font-semibold text-slate-900 dark:text-slate-100">My Documents</p>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">View and manage your drafts</p>
                     </div>
-                    <ArrowRight size={16} className="text-slate-300 group-hover:translate-x-0.5 transition-transform" />
+                    <ArrowRight size={16} className="text-slate-300 dark:text-slate-600 group-hover:translate-x-0.5 transition-transform" />
                 </Link>
             </div>
 
             {/* Account info */}
             <Card>
-                <h2 className="text-lg font-semibold text-slate-900 mb-4">Account Details</h2>
-                <div className="divide-y divide-slate-100">
+                <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Account Details</h2>
+                <div className="divide-y divide-slate-100 dark:divide-slate-700">
                     <div className="flex items-center gap-3 py-3">
                         <User size={16} className="text-slate-400 shrink-0" />
-                        <span className="text-sm text-slate-500 w-24">Username</span>
-                        <span className="text-sm font-medium text-slate-800">{user.username}</span>
+                        <span className="text-sm text-slate-500 dark:text-slate-400 w-24">Username</span>
+                        <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{user.username}</span>
                     </div>
                     <div className="flex items-center gap-3 py-3">
                         <Mail size={16} className="text-slate-400 shrink-0" />
-                        <span className="text-sm text-slate-500 w-24">Email</span>
-                        <span className="text-sm font-medium text-slate-800">{user.email}</span>
+                        <span className="text-sm text-slate-500 dark:text-slate-400 w-24">Email</span>
+                        <span className="text-sm font-medium text-slate-800 dark:text-slate-200">{user.email}</span>
                     </div>
                     <div className="flex items-center gap-3 py-3">
                         <Shield size={16} className="text-slate-400 shrink-0" />
-                        <span className="text-sm text-slate-500 w-24">Role</span>
+                        <span className="text-sm text-slate-500 dark:text-slate-400 w-24">Role</span>
                         <Badge variant={user.role === Roles.ADMIN ? 'warning' : 'brand'}>
                             {user.role === Roles.ADMIN ? 'Admin' : 'User'}
                         </Badge>
                     </div>
                 </div>
-                <div className="mt-5 pt-4 border-t border-slate-100">
+                <div className="mt-5 pt-4 border-t border-slate-100 dark:border-slate-700">
                     <Link
                         href="/profile"
-                        className="text-sm font-medium text-indigo-600 hover:text-indigo-700 hover:underline"
+                        className="text-sm font-medium text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300 hover:underline"
                     >
                         Manage account settings →
                     </Link>

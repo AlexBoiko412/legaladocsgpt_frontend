@@ -59,13 +59,13 @@ export default function VersionHistory({ jobId, isProcessing, onRestoreStart, on
             </Button>
 
             {showVersions && (
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 col-span-2 mt-2">
+                <div className="bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm p-5 col-span-2 mt-2">
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="text-sm font-semibold text-slate-800">Version History</h3>
+                        <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Version History</h3>
                         <button
                             onClick={() => setShowVersions(false)}
                             aria-label="Close version history"
-                            className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+                            className="p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                         >
                             <X size={15} />
                         </button>
@@ -73,33 +73,33 @@ export default function VersionHistory({ jobId, isProcessing, onRestoreStart, on
 
                     <div className="space-y-2.5">
                         {versions.map(v => (
-                            <div key={v.id} className="border border-slate-100 rounded-xl p-4 bg-slate-50">
+                            <div key={v.id} className="border border-slate-100 dark:border-slate-700 rounded-xl p-4 bg-slate-50 dark:bg-slate-700/40">
                                 <div className="flex items-start justify-between gap-4">
                                     <div className="space-y-1.5 flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
-                                            <span className="text-sm font-semibold text-slate-800">
+                                            <span className="text-sm font-semibold text-slate-800 dark:text-slate-200">
                                                 Version {v.version}
                                             </span>
                                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                                                 v.source === 'INITIAL'
-                                                    ? 'bg-indigo-100 text-indigo-700'
-                                                    : 'bg-purple-100 text-purple-700'
+                                                    ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400'
+                                                    : 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400'
                                             }`}>
                                                 {v.source === 'INITIAL' ? 'Original' : 'AI refinement'}
                                             </span>
                                         </div>
 
                                         {v.refinementPrompt && (
-                                            <p className="text-xs text-slate-500 italic truncate" title={v.refinementPrompt}>
+                                            <p className="text-xs text-slate-500 dark:text-slate-400 italic truncate" title={v.refinementPrompt}>
                                                 &ldquo;{v.refinementPrompt}&rdquo;
                                             </p>
                                         )}
 
-                                        <p className="text-xs text-slate-400 line-clamp-2">
+                                        <p className="text-xs text-slate-400 dark:text-slate-500 line-clamp-2">
                                             {v.content?.substring(0, 120)}…
                                         </p>
 
-                                        <p className="text-xs text-slate-400">
+                                        <p className="text-xs text-slate-400 dark:text-slate-500">
                                             {new Date(v.createdAt).toLocaleString()}
                                         </p>
                                     </div>

@@ -82,7 +82,7 @@ export default function ProfilePage() {
 
     return (
         <div className="mx-auto max-w-2xl px-4 py-10 space-y-6">
-            <h1 className="text-3xl font-bold text-slate-900">My Account</h1>
+            <h1 className="text-3xl font-bold text-slate-900 dark:text-slate-100">My Account</h1>
 
             {/* Account details */}
             <Card>
@@ -90,19 +90,19 @@ export default function ProfilePage() {
                     <CardTitle>Account Details</CardTitle>
                 </CardHeader>
 
-                <div className="divide-y divide-slate-100">
+                <div className="divide-y divide-slate-100 dark:divide-slate-700">
                     <div className="flex items-center gap-3 py-3">
                         <User size={16} className="text-slate-400 shrink-0" />
                         <div>
                             <p className="text-xs text-slate-400">Username</p>
-                            <p className="text-slate-800 font-medium">{user.username}</p>
+                            <p className="text-slate-800 dark:text-slate-200 font-medium">{user.username}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3 py-3">
                         <Mail size={16} className="text-slate-400 shrink-0" />
                         <div>
                             <p className="text-xs text-slate-400">Email</p>
-                            <p className="text-slate-800 font-medium">{user.email}</p>
+                            <p className="text-slate-800 dark:text-slate-200 font-medium">{user.email}</p>
                         </div>
                     </div>
                     <div className="flex items-center gap-3 py-3">
@@ -118,7 +118,7 @@ export default function ProfilePage() {
                         <div className="w-4 shrink-0" />
                         <div>
                             <p className="text-xs text-slate-400">Sign-in method</p>
-                            <p className="text-slate-800 font-medium">
+                            <p className="text-slate-800 dark:text-slate-200 font-medium">
                                 {isGoogleUser ? 'Google' : 'Email & Password'}
                             </p>
                         </div>
@@ -179,7 +179,7 @@ export default function ProfilePage() {
                     </form>
                 </Card>
             ) : (
-                <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-sm text-slate-500">
+                <div className="rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 p-5 text-sm text-slate-500 dark:text-slate-400">
                     Your account is linked to Google. Password management is handled by Google.
                 </div>
             )}
@@ -189,11 +189,11 @@ export default function ProfilePage() {
                 <CardHeader>
                     <CardTitle>Session</CardTitle>
                 </CardHeader>
-                <p className="text-sm text-slate-500 mb-4">Sign out from all devices by logging out.</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Sign out from all devices by logging out.</p>
                 <Button
                     variant="outline"
                     onClick={handleLogout}
-                    className="text-red-600 border-red-200 hover:bg-red-50"
+                    className="text-red-600 border-red-200 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/20"
                 >
                     <LogOut size={15} />
                     Sign Out
