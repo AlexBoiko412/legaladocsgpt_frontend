@@ -2,14 +2,16 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Edit3, Search, Plus, FileX, Clock, Trash2, Loader2 } from 'lucide-react';
+import { Edit3, Search, Plus, FileX, Clock, Trash2 } from 'lucide-react';
 import DocumentTitle from "@/components/DocumentTitle";
 import { documentsApi } from "@/lib/api";
 import { DocumentListItem, DocumentStatus } from "@/types/api";
-import { Button, buttonVariants } from '@/components/ui/Button';
+import { buttonVariants } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { Alert } from '@/components/ui/Alert';
 import { PageSpinner } from '@/components/ui/Spinner';
+import { ConfirmModal } from '@/components/ui/ConfirmModal';
+import { useDebounce } from '@/hooks/useDebounce';
 import type { VariantProps } from 'class-variance-authority';
 
 function statusBadge(status: DocumentStatus): VariantProps<typeof Badge>['variant'] {
@@ -21,6 +23,7 @@ function statusBadge(status: DocumentStatus): VariantProps<typeof Badge>['varian
 export default function DocumentListPage() {
     const [docs, setDocs] = useState<DocumentListItem[]>([]);
     const [search, setSearch] = useState('');
+    const debouncedSearch = useDebounce(search, 300);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [isDeleting, setIsDeleting] = useState<string | null>(null);
@@ -31,7 +34,7 @@ export default function DocumentListPage() {
             setIsLoading(true);
             setError(null);
             try {
-                const response = await documentsApi.getAll(search);
+                const response = await documentsApi.getAll(debouncedSearch);
                 setDocs(response.data);
             } catch (err: unknown) {
                 const message = err instanceof Error ? err.message : 'Could not load documents.';
@@ -41,9 +44,8 @@ export default function DocumentListPage() {
             }
         };
 
-        const timer = setTimeout(fetchDocuments, 300);
-        return () => clearTimeout(timer);
-    }, [search]);
+        fetchDocuments();
+    }, [debouncedSearch]);
 
     const handleDelete = async (id: string) => {
         setIsDeleteLoading(true);
@@ -76,7 +78,7 @@ export default function DocumentListPage() {
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={16} />
                 <input
                     placeholder="Search by title…"
-                    className="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all bg-white"
+                    className="w-full pl-9 pr-4 py-2.5 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500"
                     value={search}
                     onChange={e => setSearch(e.target.value)}
                 />
@@ -84,7 +86,7 @@ export default function DocumentListPage() {
 
             {error && <Alert className="mb-6">{error}</Alert>}
 
-            <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm">
+            <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden shadow-sm">
                 {isLoading ? (
                     <PageSpinner label="Retrieving documents…" />
                 ) : docs.length === 0 ? (
@@ -97,17 +99,17 @@ export default function DocumentListPage() {
                     </div>
                 ) : (
                     <table className="w-full text-left">
-                        <thead className="bg-slate-50 border-b border-slate-200">
+                        <thead className="bg-slate-50 dark:bg-slate-700/50 border-b border-slate-200 dark:border-slate-700">
                         <tr>
-                            <th className="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Document</th>
-                            <th className="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Status</th>
-                            <th className="px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">Last Modified</th>
-                            <th className="px-5 py-3.5 text-right text-xs font-semibold text-slate-500 uppercase tracking-wide">Actions</th>
+                            <th className="px-5 py-3.5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Document</th>
+                            <th className="px-5 py-3.5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Status</th>
+                            <th className="px-5 py-3.5 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Last Modified</th>
+                            <th className="px-5 py-3.5 text-right text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wide">Actions</th>
                         </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
+                        <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
                         {docs.map(doc => (
-                            <tr key={doc.jobId} className="hover:bg-slate-50/50 transition-colors">
+                            <tr key={doc.jobId} className="hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
                                 <td className="px-5 py-4">
                                     <DocumentTitle
                                         jobId={doc.jobId}
@@ -128,7 +130,7 @@ export default function DocumentListPage() {
                                         {doc.status}
                                     </Badge>
                                 </td>
-                                <td className="px-5 py-4 text-sm text-slate-500">
+                                <td className="px-5 py-4 text-sm text-slate-500 dark:text-slate-400">
                                     {doc.lastEditedAt ? (
                                         <>
                                             <div>
@@ -172,32 +174,15 @@ export default function DocumentListPage() {
                 )}
             </div>
 
-            {/* Delete confirm modal */}
             {isDeleting && (
-                <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-                    <div className="bg-white rounded-2xl max-w-sm w-full shadow-2xl p-6">
-                        <h3 className="text-lg font-bold text-slate-900 mb-2">Delete Document?</h3>
-                        <p className="text-slate-500 text-sm mb-6">
-                            This will permanently delete the document and its PDF. This action cannot be undone.
-                        </p>
-                        <div className="flex justify-end gap-3">
-                            <Button
-                                variant="ghost"
-                                onClick={() => setIsDeleting(null)}
-                                disabled={isDeleteLoading}
-                            >
-                                Cancel
-                            </Button>
-                            <Button
-                                variant="destructive"
-                                onClick={() => handleDelete(isDeleting)}
-                                loading={isDeleteLoading}
-                            >
-                                Delete
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                <ConfirmModal
+                    title="Delete Document?"
+                    description="This will permanently delete the document and its PDF. This action cannot be undone."
+                    confirmLabel="Delete"
+                    onConfirm={() => handleDelete(isDeleting)}
+                    onCancel={() => setIsDeleting(null)}
+                    loading={isDeleteLoading}
+                />
             )}
         </main>
     );
