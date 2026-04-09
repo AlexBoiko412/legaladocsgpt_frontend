@@ -65,7 +65,6 @@ export default function WordEditor({ jobId, refreshKey = 0 }: WordEditorProps) {
                     instance.destroyEditor();
                 }
             } catch {
-                // Ignore cleanup errors — editor may already be destroyed
             }
         };
     }, [refreshKey]);
