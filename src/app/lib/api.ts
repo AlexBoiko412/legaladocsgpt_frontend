@@ -12,6 +12,22 @@ const api = axios.create({
     withCredentials: true,
 });
 
+api.interceptors.response.use(
+    response => response,
+    error => {
+        if (
+            axios.isAxiosError(error) &&
+            error.response?.status === 401 &&
+            typeof window !== 'undefined' &&
+            !window.location.pathname.startsWith('/login')
+        ) {
+            const next = encodeURIComponent(window.location.pathname);
+            window.location.href = `/login?next=${next}`;
+        }
+        return Promise.reject(error);
+    }
+);
+
 
 export const authApi = {
     me: () => api.get('/api/auth/me'),
@@ -22,6 +38,10 @@ export const authApi = {
     logout: () => api.post('/api/auth/logout'),
     changePassword: (currentPassword: string, newPassword: string) =>
         api.patch('/api/auth/me/password', { currentPassword, newPassword }),
+    forgotPassword: (email: string) =>
+        api.post('/api/auth/forgot-password', { email }),
+    resetPassword: (token: string, newPassword: string) =>
+        api.post('/api/auth/reset-password', { token, newPassword }),
 };
 
 
