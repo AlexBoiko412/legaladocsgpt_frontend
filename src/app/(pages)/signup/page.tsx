@@ -4,13 +4,17 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
-import Link from 'next/link';
-import GoogleAuthButton from '@/components/UI/GoogleAuthButton';
+import AuthLayout from '@/components/layout/AuthLayout';
+import GoogleAuthButton from '@/components/ui/GoogleAuthButton';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { FormField } from '@/components/ui/FormField';
+import { Alert } from '@/components/ui/Alert';
 import { useUser } from '@/context/UserContext';
 import { authApi } from '@/lib/api';
 import { signupSchema, SignupFormData } from '@/lib/schemas';
 
-export default function Signup() {
+export default function SignupPage() {
     const router = useRouter();
     const { refetchUser } = useUser();
 
@@ -35,69 +39,75 @@ export default function Signup() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-6 text-center">Signup</h2>
-
+        <AuthLayout
+            title="Create your account"
+            subtitle="Start drafting legal documents in minutes"
+            footerText="Already have an account?"
+            footerLinkLabel="Sign in"
+            footerLinkHref="/login"
+        >
+            <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
                 {errors.root && (
-                    <p className="text-red-500 text-sm text-center mb-4">{errors.root.message}</p>
+                    <Alert variant="error">{errors.root.message}</Alert>
                 )}
 
-                <div className="mb-4">
-                    <label htmlFor="username" className="block text-sm font-medium mb-1">Username</label>
-                    <input
+                <FormField label="Username" id="username" error={errors.username?.message} required>
+                    <Input
                         {...register('username')}
-                        type="text"
                         id="username"
-                        className="w-full px-3 py-2 border rounded"
+                        type="text"
+                        autoComplete="username"
+                        placeholder="your_username"
+                        error={!!errors.username}
                         aria-describedby={errors.username ? 'username-error' : undefined}
                     />
-                    {errors.username && (
-                        <p id="username-error" className="text-red-500 text-xs mt-1">{errors.username.message}</p>
-                    )}
-                </div>
-                <div className="mb-4">
-                    <label htmlFor="email" className="block text-sm font-medium mb-1">Email</label>
-                    <input
+                </FormField>
+
+                <FormField label="Email" id="email" error={errors.email?.message} required>
+                    <Input
                         {...register('email')}
-                        type="email"
                         id="email"
-                        className="w-full px-3 py-2 border rounded"
+                        type="email"
+                        autoComplete="email"
+                        placeholder="you@example.com"
+                        error={!!errors.email}
                         aria-describedby={errors.email ? 'email-error' : undefined}
                     />
-                    {errors.email && (
-                        <p id="email-error" className="text-red-500 text-xs mt-1">{errors.email.message}</p>
-                    )}
-                </div>
-                <div className="mb-6">
-                    <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
-                    <input
+                </FormField>
+
+                <FormField
+                    label="Password"
+                    id="password"
+                    error={errors.password?.message}
+                    hint="At least 8 characters"
+                    required
+                >
+                    <Input
                         {...register('password')}
-                        type="password"
                         id="password"
-                        className="w-full px-3 py-2 border rounded"
-                        aria-describedby={errors.password ? 'password-error' : undefined}
+                        type="password"
+                        autoComplete="new-password"
+                        placeholder="••••••••"
+                        error={!!errors.password}
+                        aria-describedby={errors.password ? 'password-error' : 'password-hint'}
                     />
-                    {errors.password && (
-                        <p id="password-error" className="text-red-500 text-xs mt-1">{errors.password.message}</p>
-                    )}
+                </FormField>
+
+                <Button type="submit" loading={isSubmitting} className="w-full" size="lg">
+                    {isSubmitting ? 'Creating account…' : 'Create Account'}
+                </Button>
+
+                <div className="relative">
+                    <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-slate-200" />
+                    </div>
+                    <div className="relative flex justify-center text-xs text-slate-400 bg-white px-3">
+                        or
+                    </div>
                 </div>
 
-                <div className="w-full flex flex-col gap-4">
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
-                    >
-                        {isSubmitting ? 'Creating account...' : 'Signup'}
-                    </button>
-                    <GoogleAuthButton />
-                </div>
-
-                <div className="text-center mt-4 text-primary hover:underline">
-                    <Link href="/login">Login</Link>
-                </div>
+                <GoogleAuthButton />
             </form>
-        </div>
+        </AuthLayout>
     );
 }

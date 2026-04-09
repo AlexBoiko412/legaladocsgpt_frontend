@@ -1,17 +1,25 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import Link from 'next/link';
-import GoogleAuthButton from '@/components/UI/GoogleAuthButton';
+import AuthLayout from '@/components/layout/AuthLayout';
+import GoogleAuthButton from '@/components/ui/GoogleAuthButton';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { FormField } from '@/components/ui/FormField';
+import { Alert } from '@/components/ui/Alert';
 import { useUser } from '@/context/UserContext';
 import { authApi } from '@/lib/api';
 import { loginSchema, LoginFormData } from '@/lib/schemas';
 
-export default function Login() {
+function LoginForm() {
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const next = searchParams.get('next') ?? '/';
     const { refetchUser } = useUser();
 
     const {
@@ -25,66 +33,91 @@ export default function Login() {
         try {
             await authApi.login(data);
             await refetchUser();
-            router.push('/');
+            router.push(next);
         } catch (err: unknown) {
             const message = axios.isAxiosError(err)
-                ? err.response?.data?.message || 'Login failed. Please try again.'
+                ? err.response?.data?.message || 'Invalid credentials. Please try again.'
                 : 'An unexpected error occurred.';
             setError('root', { message });
         }
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <form onSubmit={handleSubmit(onSubmit)} className="bg-white p-8 rounded shadow-md w-96">
-                <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-5">
+            {errors.root && (
+                <Alert variant="error">{errors.root.message}</Alert>
+            )}
 
-                {errors.root && (
-                    <p className="text-red-500 text-sm text-center mb-4">{errors.root.message}</p>
-                )}
+            <FormField label="Username" id="username" error={errors.username?.message} required>
+                <Input
+                    {...register('username')}
+                    id="username"
+                    type="text"
+                    autoComplete="username"
+                    placeholder="your_username"
+                    error={!!errors.username}
+                    aria-describedby={errors.username ? 'username-error' : undefined}
+                />
+            </FormField>
 
-                <div className="mb-4">
-                    <label htmlFor="username" className="block text-sm font-medium mb-1">Username</label>
-                    <input
-                        {...register('username')}
-                        type="text"
-                        id="username"
-                        className="w-full px-3 py-2 border rounded"
-                        aria-describedby={errors.username ? 'username-error' : undefined}
-                    />
-                    {errors.username && (
-                        <p id="username-error" className="text-red-500 text-xs mt-1">{errors.username.message}</p>
-                    )}
-                </div>
-                <div className="mb-6">
-                    <label htmlFor="password" className="block text-sm font-medium mb-1">Password</label>
-                    <input
-                        {...register('password')}
-                        type="password"
-                        id="password"
-                        className="w-full px-3 py-2 border rounded"
-                        aria-describedby={errors.password ? 'password-error' : undefined}
-                    />
-                    {errors.password && (
-                        <p id="password-error" className="text-red-500 text-xs mt-1">{errors.password.message}</p>
-                    )}
-                </div>
-
-                <div className="w-full flex flex-col gap-4">
-                    <button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full py-2 bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+            <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                    <label htmlFor="password" className="block text-sm font-medium text-slate-700">
+                        Password <span className="text-red-500" aria-hidden="true">*</span>
+                    </label>
+                    <Link
+                        href="/forgot-password"
+                        className="text-xs text-indigo-600 hover:text-indigo-700 hover:underline"
                     >
-                        {isSubmitting ? 'Logging in...' : 'Login'}
-                    </button>
-                    <GoogleAuthButton />
+                        Forgot password?
+                    </Link>
                 </div>
+                <Input
+                    {...register('password')}
+                    id="password"
+                    type="password"
+                    autoComplete="current-password"
+                    placeholder="••••••••"
+                    error={!!errors.password}
+                    aria-describedby={errors.password ? 'password-error' : undefined}
+                />
+                {errors.password && (
+                    <p id="password-error" className="text-xs text-red-600" role="alert">
+                        {errors.password.message}
+                    </p>
+                )}
+            </div>
 
-                <div className="text-center mt-4 text-primary hover:underline">
-                    <Link href="/signup">Signup</Link>
+            <Button type="submit" loading={isSubmitting} className="w-full" size="lg">
+                {isSubmitting ? 'Signing in…' : 'Sign In'}
+            </Button>
+
+            <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-slate-200" />
                 </div>
-            </form>
-        </div>
+                <div className="relative flex justify-center text-xs text-slate-400 bg-white px-3">
+                    or
+                </div>
+            </div>
+
+            <GoogleAuthButton />
+        </form>
+    );
+}
+
+export default function LoginPage() {
+    return (
+        <AuthLayout
+            title="Welcome back"
+            subtitle="Sign in to your account to continue"
+            footerText="Don't have an account?"
+            footerLinkLabel="Sign up for free"
+            footerLinkHref="/signup"
+        >
+            <Suspense fallback={<div className="h-64 animate-pulse rounded-xl bg-slate-100" />}>
+                <LoginForm />
+            </Suspense>
+        </AuthLayout>
     );
 }
