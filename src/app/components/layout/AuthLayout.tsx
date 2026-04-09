@@ -60,24 +60,24 @@ export default function AuthLayout({
                 </p>
             </div>
 
-            <div className="flex flex-col items-center justify-center min-h-screen bg-white px-6 py-12 sm:px-12">
+            <div className="flex flex-col items-center justify-center min-h-screen bg-white dark:bg-slate-900 px-6 py-12 sm:px-12">
                 <div className="w-full max-w-sm space-y-8">
 
                     <Link href="/" className="flex items-center gap-2 lg:hidden">
                         <Scale className="h-6 w-6 text-indigo-600" />
-                        <span className="text-lg font-bold text-slate-900">LegaldocsGPT</span>
+                        <span className="text-lg font-bold text-slate-900 dark:text-slate-100">LegaldocsGPT</span>
                     </Link>
 
                     <div>
-                        <h2 className="text-2xl font-bold text-slate-900">{title}</h2>
-                        <p className="mt-1.5 text-sm text-slate-500">{subtitle}</p>
+                        <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">{title}</h2>
+                        <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{subtitle}</p>
                     </div>
 
                     {children}
 
-                    <p className="text-center text-sm text-slate-500">
+                    <p className="text-center text-sm text-slate-500 dark:text-slate-400">
                         {footerText}{' '}
-                        <Link href={footerLinkHref} className="font-semibold text-indigo-600 hover:text-indigo-700">
+                        <Link href={footerLinkHref} className="font-semibold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300">
                             {footerLinkLabel}
                         </Link>
                     </p>

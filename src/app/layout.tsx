@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import { UserProvider } from "@/context/UserContext";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import CookieBanner from "@/components/CookieBanner";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 const inter = Inter({
     subsets: ['latin'],
@@ -21,15 +22,16 @@ export default function RootLayout({
     children,
 }: Readonly<{ children: React.ReactNode }>) {
     return (
-        <html lang="en" className={inter.variable}>
-        <body className={`${inter.className} antialiased`}>
+        <html lang="en" className={inter.variable} suppressHydrationWarning>
+        <body className={`${inter.className} antialiased bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100`}>
+        <ThemeProvider>
         <ErrorBoundary>
             <UserProvider>
                 <Navbar />
-                <main className="pt-16 min-h-screen bg-white">
+                <main className="pt-16 min-h-screen bg-white dark:bg-slate-900">
                     {children}
                 </main>
-                <footer className="bg-slate-900 text-slate-400 text-sm py-8 px-4">
+                <footer className="bg-slate-900 dark:bg-slate-950 text-slate-400 text-sm py-8 px-4">
                     <div className="mx-auto max-w-7xl flex flex-col sm:flex-row justify-between items-center gap-4">
                         <p>&copy; {new Date().getFullYear()} LegaldocsGPT. All rights reserved.</p>
                         <div className="flex gap-5">
@@ -41,6 +43,7 @@ export default function RootLayout({
                 <CookieBanner />
             </UserProvider>
         </ErrorBoundary>
+        </ThemeProvider>
         </body>
         </html>
     );
