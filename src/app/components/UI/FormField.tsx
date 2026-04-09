@@ -16,7 +16,7 @@ export function FormField({ label, id, error, hint, required, children, classNam
         <div className={cn('space-y-1.5', className)}>
             <label
                 htmlFor={id}
-                className="block text-sm font-medium text-slate-700"
+                className="block text-sm font-medium text-slate-700 dark:text-slate-300"
             >
                 {label}
                 {required && (
@@ -25,7 +25,7 @@ export function FormField({ label, id, error, hint, required, children, classNam
             </label>
             {children}
             {hint && !error && (
-                <p className="text-xs text-slate-500">{hint}</p>
+                <p className="text-xs text-slate-500 dark:text-slate-400">{hint}</p>
             )}
             {error && (
                 <p id={`${id}-error`} className="text-xs text-red-600" role="alert">

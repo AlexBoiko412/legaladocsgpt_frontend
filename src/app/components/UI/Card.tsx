@@ -17,7 +17,7 @@ const paddingMap = {
 export function Card({ children, className, padding = 'md' }: CardProps) {
     return (
         <div className={cn(
-            'bg-white rounded-xl border border-slate-200 shadow-sm',
+            'bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm',
             paddingMap[padding],
             className
         )}>
@@ -28,7 +28,7 @@ export function Card({ children, className, padding = 'md' }: CardProps) {
 
 export function CardHeader({ children, className }: { children: ReactNode; className?: string }) {
     return (
-        <div className={cn('mb-5 pb-4 border-b border-slate-100', className)}>
+        <div className={cn('mb-5 pb-4 border-b border-slate-100 dark:border-slate-700', className)}>
             {children}
         </div>
     );
@@ -36,7 +36,7 @@ export function CardHeader({ children, className }: { children: ReactNode; class
 
 export function CardTitle({ children, className }: { children: ReactNode; className?: string }) {
     return (
-        <h2 className={cn('text-lg font-semibold text-slate-900', className)}>
+        <h2 className={cn('text-lg font-semibold text-slate-900 dark:text-slate-100', className)}>
             {children}
         </h2>
     );
