@@ -1,34 +1,154 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LegaldocsGPT
 
-## Getting Started
+AI-powered legal document generation platform. Pick a template, fill in the details, and get a ready-to-review document in seconds - with a built-in editor, PDF export, and full version history.
 
-First, run the development server:
+**Live demo:** _coming soon_
+**Demo account:** `demo@legaldocsgpt.com` / `Demo1234`
+
+---
+
+## Features
+
+- **AI document generation** - fill a form, the backend calls an LLM and produces a fully formatted legal document
+- **Built-in document editor** - powered by OnlyOffice; edit the generated document in-browser
+- **AI refinement** - send a follow-up prompt to revise the document without starting over
+- **Version history** - every generation and refinement is saved; restore any previous version
+- **PDF export** - convert and download any document as a PDF
+- **Template management** - admins can create, edit, and delete document templates
+- **Google OAuth2** - sign in with Google in addition to username/password
+- **Forgot/reset password** - full email-based password reset flow
+- **Role-based access** - user and admin roles, admin routes protected at middleware level
+- **Mobile responsive** - works on phone, tablet, and desktop
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Frontend | Next.js 15 (App Router), TypeScript |
+| Styling | Tailwind CSS v4, class-variance-authority |
+| Forms | React Hook Form + Zod |
+| HTTP | Axios with 401 interceptor |
+| Document editor | OnlyOffice Document Server |
+| Backend | Spring Boot, Spring Security |
+| Auth | Cookie-based JWT, Google OAuth2 |
+| Database | PostgreSQL |
+| AI | LLM API (document generation + refinement) |
+
+---
+
+## Architecture
+
+```
+Browser
+  |
+  v
+Next.js (Vercel)
+  |-- middleware (auth guard, role check)
+  |
+  v
+Spring Boot API
+  |-- /api/auth       (login, signup, OAuth2, password reset)
+  |-- /api/documents  (generate, finalize, versions, PDF)
+  |-- /api/templates  (CRUD, admin only)
+  |-- /api/storage    (file download)
+  |
+  +---> PostgreSQL
+  +---> LLM API (document generation + refinement)
+  +---> OnlyOffice Document Server (editor)
+  +---> SMTP (password reset emails)
+```
+
+---
+
+## Local Setup
+
+### Prerequisites
+
+- Node.js 20+
+- A running instance of the backend (see backend repo)
+- OnlyOffice Document Server (optional, needed for the editor)
+
+### 1. Clone and install
+
+```bash
+git clone https://github.com/your-username/legaldocsgpt-frontend
+cd legaldocsgpt-frontend
+npm install
+```
+
+### 2. Configure environment
+
+```bash
+cp .env.example .env.local
+```
+
+Edit `.env.local`:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8080
+NEXT_PUBLIC_ONLYOFFICE_URL=http://localhost:8089
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
+
+### 3. Run
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+  app/
+    (pages)/        # Route groups (login, signup, dashboard, documents, profile, admin)
+    components/
+      ui/           # Design system primitives (Button, Input, Card, Badge, Alert, ...)
+      layout/       # Shared layouts (AuthLayout)
+    hooks/          # Custom hooks (useDocumentPolling)
+    lib/            # API client, Zod schemas, constants, utils
+    types/          # Shared TypeScript types
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## UI Component Library
 
-## Deploy on Vercel
+The project uses a custom design system built on Tailwind CSS and `class-variance-authority`:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Component | Variants |
+|-----------|---------|
+| `Button` | primary, secondary, destructive, outline, ghost, link / sm, md, lg, icon |
+| `Badge` | success, danger, warning, info, brand, default / optional pulse |
+| `Alert` | error, success, warning, info - auto-selects icon |
+| `Input` / `Textarea` / `Select` | default + error state |
+| `FormField` | wraps label, input, error message, hint with correct aria |
+| `Card` | with CardHeader and CardTitle |
+| `Spinner` / `PageSpinner` | inline and full-page loading states |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## Security
+
+- All protected routes validated server-side in middleware before rendering
+- Admin routes require `ROLE_ADMIN` claim in JWT
+- CSP headers, X-Frame-Options, X-Content-Type-Options, Referrer-Policy set on every response
+- Axios 401 interceptor redirects to login on session expiry and preserves the original URL
+- Password reset tokens stripped from browser history after use
+
+---
+
+## Scripts
+
+```bash
+npm run dev      # start dev server with Turbopack
+npm run build    # production build
+npm run start    # serve production build
+npm run lint     # ESLint
+```
