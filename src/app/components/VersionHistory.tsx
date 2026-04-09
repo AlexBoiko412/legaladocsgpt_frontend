@@ -1,9 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2, History, X } from 'lucide-react';
+import { History, X } from 'lucide-react';
 import { documentsApi } from '@/lib/api';
 import { DocumentVersion } from '@/types/api';
+import { Button } from '@/components/ui/Button';
 
 interface VersionHistoryProps {
     jobId: string;
@@ -47,69 +48,72 @@ export default function VersionHistory({ jobId, isProcessing, onRestoreStart, on
 
     return (
         <>
-            <button
+            <Button
+                variant="outline"
                 onClick={loadVersions}
-                disabled={loadingVersions}
-                className="w-full border border-slate-200 hover:bg-slate-50 py-2 rounded-lg text-sm font-medium flex justify-center items-center gap-2"
+                loading={loadingVersions}
+                className="w-full"
             >
-                {loadingVersions ? <Loader2 size={14} className="animate-spin" /> : <History size={14} />}
+                <History size={14} />
                 Version History
-            </button>
+            </Button>
 
             {showVersions && (
-                <div className="bg-white rounded-xl border shadow-sm p-6 col-span-2">
+                <div className="bg-white rounded-xl border border-slate-200 shadow-sm p-5 col-span-2 mt-2">
                     <div className="flex justify-between items-center mb-4">
-                        <h3 className="font-semibold text-slate-800">Version History</h3>
+                        <h3 className="text-sm font-semibold text-slate-800">Version History</h3>
                         <button
                             onClick={() => setShowVersions(false)}
                             aria-label="Close version history"
-                            className="text-slate-400 hover:text-slate-600"
+                            className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
                         >
-                            <X size={16} />
+                            <X size={15} />
                         </button>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                         {versions.map(v => (
-                            <div key={v.id} className="border rounded-lg p-4">
+                            <div key={v.id} className="border border-slate-100 rounded-xl p-4 bg-slate-50">
                                 <div className="flex items-start justify-between gap-4">
-                                    <div className="space-y-1 flex-1 min-w-0">
+                                    <div className="space-y-1.5 flex-1 min-w-0">
                                         <div className="flex items-center gap-2 flex-wrap">
                                             <span className="text-sm font-semibold text-slate-800">
                                                 Version {v.version}
                                             </span>
                                             <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                                                 v.source === 'INITIAL'
-                                                    ? 'bg-blue-100 text-blue-700'
+                                                    ? 'bg-indigo-100 text-indigo-700'
                                                     : 'bg-purple-100 text-purple-700'
                                             }`}>
-                                                {v.source === 'INITIAL' ? 'Original generation' : 'AI refinement'}
+                                                {v.source === 'INITIAL' ? 'Original' : 'AI refinement'}
                                             </span>
                                         </div>
 
                                         {v.refinementPrompt && (
                                             <p className="text-xs text-slate-500 italic truncate" title={v.refinementPrompt}>
-                                                Prompt: &quot;{v.refinementPrompt}&quot;
+                                                &ldquo;{v.refinementPrompt}&rdquo;
                                             </p>
                                         )}
 
                                         <p className="text-xs text-slate-400 line-clamp-2">
-                                            {v.content?.substring(0, 120)}...
+                                            {v.content?.substring(0, 120)}…
                                         </p>
 
                                         <p className="text-xs text-slate-400">
-                                            Saved {new Date(v.createdAt).toLocaleString()}
+                                            {new Date(v.createdAt).toLocaleString()}
                                         </p>
                                     </div>
 
-                                    <button
+                                    <Button
+                                        variant="link"
+                                        size="sm"
                                         onClick={() => handleRestore(v.version)}
                                         disabled={restoring === v.version || isProcessing}
-                                        className="shrink-0 text-sm text-blue-600 hover:underline disabled:opacity-50 flex items-center gap-1"
+                                        loading={restoring === v.version}
+                                        className="shrink-0"
                                     >
-                                        {restoring === v.version && <Loader2 size={12} className="animate-spin" />}
                                         Restore
-                                    </button>
+                                    </Button>
                                 </div>
                             </div>
                         ))}

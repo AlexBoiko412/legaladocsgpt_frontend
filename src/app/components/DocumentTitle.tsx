@@ -41,15 +41,12 @@ export default function DocumentTitle({ jobId, initialTitle, onRenamed }: Docume
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') handleSave();
-        if (e.key === 'Escape') {
-            setValue(initialTitle);
-            setEditing(false);
-        }
+        if (e.key === 'Escape') { setValue(initialTitle); setEditing(false); }
     };
 
     if (editing) {
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
                 <input
                     autoFocus
                     value={value}
@@ -58,7 +55,7 @@ export default function DocumentTitle({ jobId, initialTitle, onRenamed }: Docume
                     onBlur={handleSave}
                     disabled={saving}
                     aria-label="Document title"
-                    className="border border-blue-400 rounded px-2 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-48"
+                    className="border border-indigo-400 rounded-lg px-2 py-0.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-48"
                     maxLength={100}
                 />
                 <button
@@ -66,32 +63,34 @@ export default function DocumentTitle({ jobId, initialTitle, onRenamed }: Docume
                     onClick={handleSave}
                     disabled={saving}
                     aria-label="Save title"
-                    className="text-green-600 hover:text-green-700"
+                    className="p-1 rounded text-green-600 hover:bg-green-50 transition-colors"
                 >
-                    <Check size={14} />
+                    <Check size={13} />
                 </button>
                 <button
                     onClick={() => { setValue(initialTitle); setEditing(false); }}
                     aria-label="Cancel rename"
-                    className="text-slate-400 hover:text-slate-600"
+                    className="p-1 rounded text-slate-400 hover:bg-slate-100 transition-colors"
                 >
-                    <X size={14} />
+                    <X size={13} />
                 </button>
             </div>
         );
     }
 
     return (
-        <div className="flex items-center gap-2 group">
+        <div className="flex items-center gap-1.5 group">
             <span className="text-sm font-medium text-slate-700">{value}</span>
             <button
                 onClick={() => setEditing(true)}
                 aria-label={`Rename "${value}"`}
-                className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-slate-600 transition-opacity"
+                className="opacity-0 group-hover:opacity-100 p-1 rounded text-slate-400 hover:text-slate-600 hover:bg-slate-100 transition-all"
             >
-                <Pencil size={13} />
+                <Pencil size={12} />
             </button>
-            {error && <span className="text-red-500 text-xs" role="alert">{error}</span>}
+            {error && (
+                <span className="text-red-500 text-xs" role="alert">{error}</span>
+            )}
         </div>
     );
 }

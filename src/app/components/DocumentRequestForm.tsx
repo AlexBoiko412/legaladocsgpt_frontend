@@ -5,7 +5,14 @@ import { useForm } from 'react-hook-form';
 import { TemplateDefinition } from '@/types/template';
 import { GenerateFormData } from '@/types/api';
 import { templatesApi } from "@/lib/api";
-import { AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/Textarea';
+import { Select } from '@/components/ui/Select';
+import { FormField } from '@/components/ui/FormField';
+import { Alert } from '@/components/ui/Alert';
+import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Sparkles } from 'lucide-react';
 
 interface DocumentRequestFormProps {
     onSubmit: (data: GenerateFormData) => void;
@@ -39,84 +46,87 @@ export default function DocumentRequestForm({ onSubmit, isLoading }: DocumentReq
     };
 
     if (fetchError) {
-        return (
-            <div className="flex items-center gap-2 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
-                <AlertCircle size={16} />
-                {fetchError}
-            </div>
-        );
+        return <Alert variant="error">{fetchError}</Alert>;
     }
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white p-8 rounded-xl shadow-lg border">
-            <h2 className="text-xl font-bold border-b pb-4">Create Document</h2>
+        <Card padding="lg" className="max-w-3xl mx-auto">
+            <CardHeader>
+                <CardTitle>
+                    <span className="flex items-center gap-2">
+                        <Sparkles size={18} className="text-indigo-600" />
+                        Create Document
+                    </span>
+                </CardTitle>
+            </CardHeader>
 
-            <div className="flex flex-col gap-2">
-                <label htmlFor="template-select" className="font-semibold text-slate-700">Choose a Template</label>
-                <select
-                    id="template-select"
-                    onChange={handleTemplateChange}
-                    className="p-2 border rounded bg-slate-50"
-                >
-                    {templates.map(t => (
-                        <option key={t.id} value={t.id}>{t.name}</option>
-                    ))}
-                </select>
-                {selectedTemplate?.description && (
-                    <p className="text-xs text-slate-500">{selectedTemplate.description}</p>
-                )}
-            </div>
-
-            <div className="flex flex-col gap-2">
-                <label htmlFor="format-select" className="font-semibold text-slate-700">Format</label>
-                <select id="format-select" {...register("format")} className="p-2 border rounded">
-                    <option value="PDF">PDF</option>
-                    <option value="DOCX">Word (DOCX)</option>
-                </select>
-            </div>
-
-            <hr />
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {selectedTemplate?.fields.map(field => (
-                    <div
-                        key={field.key}
-                        className={`flex flex-col gap-1 ${field.type === 'textarea' ? 'md:col-span-2' : ''}`}
-                    >
-                        <label htmlFor={`field-${field.key}`} className="text-sm font-medium text-slate-600">
-                            {field.label} {field.required && <span className="text-red-500" aria-hidden="true">*</span>}
-                        </label>
-
-                        {field.type === 'textarea' ? (
-                            <textarea
-                                id={`field-${field.key}`}
-                                {...register(`data.${field.key}`, { required: field.required })}
-                                placeholder={field.placeholder}
-                                rows={4}
-                                className="p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
-                                aria-required={field.required}
-                            />
-                        ) : (
-                            <input
-                                id={`field-${field.key}`}
-                                type={field.type}
-                                {...register(`data.${field.key}`, { required: field.required })}
-                                placeholder={field.placeholder}
-                                className="p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none"
-                                aria-required={field.required}
-                            />
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <FormField label="Template" id="template-select">
+                        <Select id="template-select" onChange={handleTemplateChange}>
+                            {templates.map(t => (
+                                <option key={t.id} value={t.id}>{t.name}</option>
+                            ))}
+                        </Select>
+                        {selectedTemplate?.description && (
+                            <p className="mt-1 text-xs text-slate-500">{selectedTemplate.description}</p>
                         )}
-                    </div>
-                ))}
-            </div>
+                    </FormField>
 
-            <button
-                type="submit"
-                disabled={isLoading || templates.length === 0}
-                className="w-full bg-blue-600 text-white font-bold py-3 rounded hover:bg-blue-700 disabled:bg-slate-300 transition-colors"
-            >
-                {isLoading ? 'Communicating with AI...' : 'Generate Draft'}
-            </button>
-        </form>
+                    <FormField label="Output Format" id="format-select">
+                        <Select id="format-select" {...register('format')}>
+                            <option value="PDF">PDF</option>
+                            <option value="DOCX">Word (DOCX)</option>
+                        </Select>
+                    </FormField>
+                </div>
+
+                {selectedTemplate?.fields && selectedTemplate.fields.length > 0 && (
+                    <>
+                        <div className="border-t border-slate-100" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                            {selectedTemplate.fields.map(field => (
+                                <FormField
+                                    key={field.key}
+                                    label={field.label}
+                                    id={`field-${field.key}`}
+                                    required={field.required}
+                                    className={field.type === 'textarea' ? 'md:col-span-2' : ''}
+                                >
+                                    {field.type === 'textarea' ? (
+                                        <Textarea
+                                            id={`field-${field.key}`}
+                                            {...register(`data.${field.key}`, { required: field.required })}
+                                            placeholder={field.placeholder}
+                                            rows={4}
+                                            aria-required={field.required}
+                                        />
+                                    ) : (
+                                        <Input
+                                            id={`field-${field.key}`}
+                                            type={field.type}
+                                            {...register(`data.${field.key}`, { required: field.required })}
+                                            placeholder={field.placeholder}
+                                            aria-required={field.required}
+                                        />
+                                    )}
+                                </FormField>
+                            ))}
+                        </div>
+                    </>
+                )}
+
+                <Button
+                    type="submit"
+                    loading={isLoading}
+                    disabled={isLoading || templates.length === 0}
+                    size="lg"
+                    className="w-full"
+                >
+                    <Sparkles size={16} />
+                    {isLoading ? 'Communicating with AI…' : 'Generate Draft'}
+                </Button>
+            </form>
+        </Card>
     );
 }
