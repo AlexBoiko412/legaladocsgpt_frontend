@@ -60,7 +60,6 @@ export function useDocumentPolling(jobId: string, callbacks: PollingCallbacks) {
             const message = err instanceof Error ? err.message : 'Failed to fetch status';
             console.error('Polling error:', message);
             setError(message);
-            // Back off and retry on network errors
             pollTimer.current = setTimeout(checkStatus, 4000);
         }
     };

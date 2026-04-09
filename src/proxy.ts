@@ -8,7 +8,9 @@ export async function proxy(req: NextRequest) {
     const token = req.cookies.get("token")?.value;
 
     if (!token) {
-        return NextResponse.redirect(new URL("/login", req.url));
+        const loginUrl = new URL('/login', req.url);
+        loginUrl.searchParams.set('next', req.nextUrl.pathname);
+        return NextResponse.redirect(loginUrl);
     }
 
     try {
@@ -19,7 +21,9 @@ export async function proxy(req: NextRequest) {
         });
 
         if (!response.ok) {
-            return NextResponse.redirect(new URL("/login", req.url));
+            const loginUrl = new URL('/login', req.url);
+            loginUrl.searchParams.set('next', req.nextUrl.pathname);
+            return NextResponse.redirect(loginUrl);
         }
 
         if (req.nextUrl.pathname.startsWith("/admin")) {
