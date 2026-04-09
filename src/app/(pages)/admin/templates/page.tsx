@@ -3,11 +3,14 @@
 import { useEffect, useState } from 'react';
 import { useUser } from '@/context/UserContext';
 import { useRouter } from 'next/navigation';
-import { Plus, Trash2, Pencil, Loader2, AlertCircle } from 'lucide-react';
+import { Plus, Trash2, Pencil, Loader2 } from 'lucide-react';
 import { templatesApi } from '@/lib/api';
 import { AdminTemplate } from '@/types/template';
 import { Roles } from '@/lib/constants';
 import TemplateFormModal from '@/components/TemplateFormModal';
+import { Button } from '@/components/ui/Button';
+import { Alert } from '@/components/ui/Alert';
+import { PageSpinner } from '@/components/ui/Spinner';
 
 export default function AdminTemplatesPage() {
     const { user, loading } = useUser();
@@ -53,81 +56,63 @@ export default function AdminTemplatesPage() {
         }
     };
 
-    const openCreate = () => {
-        setEditingTemplate(null);
-        setShowForm(true);
-    };
-
-    const openEdit = (t: AdminTemplate) => {
-        setEditingTemplate(t);
-        setShowForm(true);
-    };
-
-    const closeForm = () => {
-        setShowForm(false);
-        setEditingTemplate(null);
-    };
+    const openCreate = () => { setEditingTemplate(null); setShowForm(true); };
+    const openEdit   = (t: AdminTemplate) => { setEditingTemplate(t); setShowForm(true); };
+    const closeForm  = () => { setShowForm(false); setEditingTemplate(null); };
 
     if (loading || !user) return null;
 
     return (
-        <main className="container mx-auto py-10 px-4 max-w-5xl">
+        <main className="mx-auto max-w-5xl px-4 py-10">
             <div className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-3xl font-bold text-slate-900">Template Management</h1>
-                    <p className="text-slate-500 mt-1">Admin only — manage document templates</p>
+                    <p className="text-slate-500 mt-1">Admin only - manage document templates</p>
                 </div>
-                <button
-                    onClick={openCreate}
-                    className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg flex items-center gap-2 font-semibold"
-                >
-                    <Plus size={18} /> New Template
-                </button>
+                <Button onClick={openCreate}>
+                    <Plus size={16} /> New Template
+                </Button>
             </div>
 
-            {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg flex items-center gap-2 text-red-700">
-                    <AlertCircle size={16} /> {error}
-                </div>
-            )}
+            {error && <Alert className="mb-6">{error}</Alert>}
 
             {isLoading ? (
-                <div className="flex justify-center py-20">
-                    <Loader2 className="animate-spin text-blue-600" size={40} />
-                </div>
+                <PageSpinner label="Loading templates…" />
             ) : (
-                <div className="space-y-4">
+                <div className="space-y-3">
                     {templates.map(t => (
-                        <div key={t.id} className="bg-white border rounded-xl p-5 shadow-sm flex justify-between items-start">
-                            <div>
+                        <div key={t.id} className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex justify-between items-start gap-4 hover:shadow-md transition-shadow">
+                            <div className="min-w-0">
                                 <h3 className="font-semibold text-slate-800">{t.name}</h3>
-                                <p className="text-slate-500 text-sm mt-1">{t.description}</p>
+                                <p className="text-slate-500 text-sm mt-0.5">{t.description}</p>
                                 <p className="text-xs text-slate-400 font-mono mt-1">{t.docxPath}</p>
-                                <div className="flex gap-2 mt-2 flex-wrap">
-                                    {t.fields.map(f => (
-                                        <span key={f.key} className="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded">
-                                            {f.label}
-                                        </span>
-                                    ))}
-                                </div>
+                                {t.fields.length > 0 && (
+                                    <div className="flex gap-1.5 mt-2 flex-wrap">
+                                        {t.fields.map(f => (
+                                            <span key={f.key} className="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-md">
+                                                {f.label}
+                                            </span>
+                                        ))}
+                                    </div>
+                                )}
                             </div>
-                            <div className="flex gap-2 shrink-0 ml-4">
+                            <div className="flex gap-1 shrink-0">
                                 <button
                                     onClick={() => openEdit(t)}
                                     aria-label={`Edit template: ${t.name}`}
-                                    className="p-2 hover:bg-blue-50 text-blue-600 rounded"
+                                    className="p-2 hover:bg-indigo-50 text-indigo-600 rounded-lg transition-colors"
                                 >
-                                    <Pencil size={16} />
+                                    <Pencil size={15} />
                                 </button>
                                 <button
                                     onClick={() => handleDelete(t.id)}
                                     disabled={deleting === t.id}
                                     aria-label={`Delete template: ${t.name}`}
-                                    className="p-2 hover:bg-red-50 text-red-500 rounded disabled:opacity-50"
+                                    className="p-2 hover:bg-red-50 text-red-500 rounded-lg disabled:opacity-40 transition-colors"
                                 >
                                     {deleting === t.id
-                                        ? <Loader2 size={16} className="animate-spin" />
-                                        : <Trash2 size={16} />}
+                                        ? <Loader2 size={15} className="animate-spin" />
+                                        : <Trash2 size={15} />}
                                 </button>
                             </div>
                         </div>

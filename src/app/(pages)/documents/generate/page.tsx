@@ -6,6 +6,7 @@ import axios from 'axios';
 import DocumentRequestForm from '@/components/DocumentRequestForm';
 import { documentsApi } from "@/lib/api";
 import { GenerateFormData } from '@/types/api';
+import { Alert } from '@/components/ui/Alert';
 
 export default function GeneratePage() {
     const [isLoading, setIsLoading] = useState(false);
@@ -29,12 +30,8 @@ export default function GeneratePage() {
     };
 
     return (
-        <main className="container mx-auto py-10 px-4">
-            {error && (
-                <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-                    {error}
-                </div>
-            )}
+        <main className="mx-auto max-w-4xl px-4 py-10">
+            {error && <Alert className="mb-6">{error}</Alert>}
             <DocumentRequestForm onSubmit={handleFormSubmit} isLoading={isLoading} />
         </main>
     );
