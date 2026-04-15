@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useUser } from '@/context/UserContext';
 import { authApi } from '@/lib/api';
 import { User, Mail, Shield, Lock, LogOut } from 'lucide-react';
-import { useRouter } from 'next/navigation';
 import axios from 'axios';
 import { Roles } from '@/lib/constants';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -18,7 +17,6 @@ import { LogoutButton } from "@/components/ui/LogoutButton";
 
 export default function ProfilePage() {
     const { user, loading } = useUser();
-    const router = useRouter();
 
     const [currentPassword, setCurrentPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
