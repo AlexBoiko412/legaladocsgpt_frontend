@@ -27,7 +27,6 @@ export default function ForgotPasswordPage() {
             setSubmitted(true);
         } catch (err: unknown) {
             if (axios.isAxiosError(err) && err.response?.status === 404) {
-                // Don't reveal whether the email exists
                 setSubmitted(true);
             } else {
                 setError('Something went wrong. Please try again.');
