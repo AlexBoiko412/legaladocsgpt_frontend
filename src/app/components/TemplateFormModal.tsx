@@ -71,16 +71,16 @@ export default function TemplateFormModal({ editingTemplate, onSave, onClose }: 
 
     return (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-            <div className="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
+            <div className="bg-white dark:bg-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl">
                 {/* Header */}
-                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-                    <h2 className="text-lg font-bold text-slate-900">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-700">
+                    <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100">
                         {editingTemplate ? 'Edit Template' : 'New Template'}
                     </h2>
                     <button
                         onClick={onClose}
                         aria-label="Close modal"
-                        className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+                        className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition-colors"
                     >
                         <X size={18} />
                     </button>
@@ -131,14 +131,14 @@ export default function TemplateFormModal({ editingTemplate, onSave, onClose }: 
                             accept=".docx"
                             required={!editingTemplate}
                             onChange={e => setForm(f => ({ ...f, file: e.target.files?.[0] ?? null }))}
-                            className="w-full text-sm text-slate-600 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 transition-colors"
+                            className="w-full text-sm text-slate-600 dark:text-slate-400 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 dark:file:bg-indigo-900/30 dark:file:text-indigo-400 transition-colors"
                         />
                     </FormField>
 
                     {/* Dynamic fields */}
                     <div>
                         <div className="flex justify-between items-center mb-3">
-                            <label className="text-sm font-medium text-slate-700">Form Fields</label>
+                            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Form Fields</label>
                             <button
                                 type="button"
                                 onClick={() => setForm(f => ({ ...f, fields: [...f.fields, emptyField()] }))}
@@ -149,7 +149,7 @@ export default function TemplateFormModal({ editingTemplate, onSave, onClose }: 
                         </div>
                         <div className="space-y-3">
                             {form.fields.map((field, i) => (
-                                <div key={i} className="border border-slate-200 rounded-xl p-4 space-y-3 bg-slate-50">
+                                <div key={i} className="border border-slate-200 dark:border-slate-600 rounded-xl p-4 space-y-3 bg-slate-50 dark:bg-slate-700/40">
                                     <div className="grid grid-cols-2 gap-2">
                                         <Input
                                             placeholder="Key (e.g. employeeName)"
@@ -176,7 +176,7 @@ export default function TemplateFormModal({ editingTemplate, onSave, onClose }: 
                                             value={field.placeholder}
                                             onChange={e => updateField(i, 'placeholder', e.target.value)}
                                         />
-                                        <label className="flex items-center gap-2 text-sm text-slate-600 cursor-pointer">
+                                        <label className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 cursor-pointer">
                                             <input
                                                 type="checkbox"
                                                 checked={field.required}
@@ -203,7 +203,7 @@ export default function TemplateFormModal({ editingTemplate, onSave, onClose }: 
                         </div>
                     </div>
 
-                    <div className="flex justify-end gap-3 pt-2 border-t border-slate-100">
+                    <div className="flex justify-end gap-3 pt-2 border-t border-slate-100 dark:border-slate-700">
                         <Button type="button" variant="ghost" onClick={onClose}>
                             Cancel
                         </Button>
