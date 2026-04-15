@@ -19,8 +19,10 @@ api.interceptors.response.use(
             axios.isAxiosError(error) &&
             error.response?.status === 401 &&
             typeof window !== 'undefined' &&
-            !window.location.pathname.startsWith('/login')
-        ) {
+            !window.location.pathname.startsWith('/login') &&
+            !window.location.pathname.startsWith('/forgot-password') &&
+            !window.location.pathname.startsWith('/reset-password')
+    ) {
             const next = encodeURIComponent(window.location.pathname);
             window.location.href = `/login?next=${next}`;
         }
