@@ -84,12 +84,12 @@ export default function DocumentStatusHandler({ jobId }: { jobId: string }) {
     if (!statusData) return <PageSpinner label="Loading document…" />;
 
     if (statusData.status === 'FAILED' && !isProcessing) return (
-        <div className="flex flex-col items-center p-12 bg-red-50 rounded-xl border border-red-200 max-w-lg mx-auto mt-10 text-center">
-            <div className="w-14 h-14 rounded-full bg-red-100 flex items-center justify-center mb-4">
-                <span className="text-2xl text-red-500">!</span>
+        <div className="flex flex-col items-center p-12 bg-red-50 dark:bg-red-900/20 rounded-xl border border-red-200 dark:border-red-800 max-w-lg mx-auto mt-10 text-center">
+            <div className="w-14 h-14 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4">
+                <span className="text-2xl text-red-500 dark:text-red-400">!</span>
             </div>
-            <h3 className="text-lg font-semibold text-red-700">Generation Failed</h3>
-            <p className="text-red-500 text-sm mt-2">
+            <h3 className="text-lg font-semibold text-red-700 dark:text-red-400">Generation Failed</h3>
+            <p className="text-red-500 dark:text-red-400 text-sm mt-2">
                 {statusData.errorDetails || 'An unexpected error occurred.'}
             </p>
             <Button
@@ -103,10 +103,10 @@ export default function DocumentStatusHandler({ jobId }: { jobId: string }) {
     );
 
     if (statusData.status === 'PENDING' || statusData.status === 'IN_PROGRESS') return (
-        <div className="flex flex-col items-center p-16 bg-white rounded-xl border max-w-lg mx-auto mt-10">
+        <div className="flex flex-col items-center p-16 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 max-w-lg mx-auto mt-10">
             <Spinner size={40} />
-            <h3 className="mt-4 text-base font-semibold text-slate-700">Processing your legal document…</h3>
-            <p className="text-slate-400 text-sm mt-1">Status: {statusData.status}</p>
+            <h3 className="mt-4 text-base font-semibold text-slate-700 dark:text-slate-300">Processing your legal document…</h3>
+            <p className="text-slate-400 dark:text-slate-500 text-sm mt-1">Status: {statusData.status}</p>
         </div>
     );
 
@@ -123,7 +123,7 @@ export default function DocumentStatusHandler({ jobId }: { jobId: string }) {
             ) : (
                 <div className="min-h-[512px] flex flex-col items-center justify-center gap-4">
                     <Spinner size={36} label="Reloading editor…" />
-                    <p className="text-sm text-slate-500">Applying changes…</p>
+                    <p className="text-sm text-slate-500 dark:text-slate-400">Applying changes…</p>
                 </div>
             )}
 
@@ -134,7 +134,7 @@ export default function DocumentStatusHandler({ jobId }: { jobId: string }) {
                         <Wand2 size={16} />
                         <h3 className="text-sm">AI Assistant</h3>
                     </div>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                         Regenerate content using a custom prompt. This overwrites current body text.
                     </p>
                     <Textarea
@@ -157,8 +157,8 @@ export default function DocumentStatusHandler({ jobId }: { jobId: string }) {
 
                 {/* Sync & Export */}
                 <Card className="space-y-4">
-                    <h3 className="text-sm font-semibold text-slate-800">Sync & Export</h3>
-                    <p className="text-xs text-slate-500">
+                    <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-200">Sync & Export</h3>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
                         Update the PDF to match your manual changes in the editor above.
                     </p>
                     <div className="flex flex-col gap-2 pt-1">
