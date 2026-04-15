@@ -5,7 +5,6 @@ import { useUser } from '@/context/UserContext';
 import { authApi } from '@/lib/api';
 import { User, Mail, Shield, Lock, LogOut } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import Cookies from 'js-cookie';
 import axios from 'axios';
 import { Roles } from '@/lib/constants';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -15,6 +14,7 @@ import { FormField } from '@/components/ui/FormField';
 import { Badge } from '@/components/ui/Badge';
 import { Alert } from '@/components/ui/Alert';
 import { PageSpinner } from '@/components/ui/Spinner';
+import { LogoutButton } from "@/components/ui/LogoutButton";
 
 export default function ProfilePage() {
     const { user, loading } = useUser();
@@ -57,15 +57,6 @@ export default function ProfilePage() {
         } finally {
             setPwSaving(false);
         }
-    };
-
-    const handleLogout = async () => {
-        await authApi.logout();
-        Cookies.remove('token');
-        Cookies.remove('username');
-        Cookies.remove('email');
-        Cookies.remove('role');
-        router.push('/login');
     };
 
     if (loading) return <PageSpinner label="Loading profile…" />;
@@ -190,14 +181,10 @@ export default function ProfilePage() {
                     <CardTitle>Session</CardTitle>
                 </CardHeader>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mb-4">Sign out from all devices by logging out.</p>
-                <Button
-                    variant="outline"
-                    onClick={handleLogout}
-                    className="text-red-600 border-red-200 hover:bg-red-50 dark:text-red-400 dark:border-red-800 dark:hover:bg-red-900/20"
-                >
-                    <LogOut size={15} />
+                <LogoutButton className="w-full flex items-center gap-2.5 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-900/20">
+                    <LogOut size={16} />
                     Sign Out
-                </Button>
+                </LogoutButton>
             </Card>
         </div>
     );
