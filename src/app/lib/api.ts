@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-if (process.env.NODE_ENV !== 'development' && !process.env.NEXT_PUBLIC_API_URL) {
+// "" = same origin
+if (process.env.NODE_ENV !== 'development' && process.env.NEXT_PUBLIC_API_URL === undefined) {
     console.error('[api] NEXT_PUBLIC_API_URL is not set. Requests will fall back to localhost, which will fail in production.');
 }
 
