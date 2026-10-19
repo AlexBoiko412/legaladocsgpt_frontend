@@ -2,8 +2,7 @@
 
 AI-powered legal document generation platform. Pick a template, fill in the details, and get a ready-to-review document in seconds - with a built-in editor, PDF export, and full version history.
 
-**Live demo:** _coming soon_
-**Demo account:** `demo@legaldocsgpt.com` / `Demo1234`
+**Live demo:** _add your link here after deploying_. On the login page, click **"Try the demo account"**; no sign-up needed.
 
 ---
 
@@ -26,7 +25,7 @@ AI-powered legal document generation platform. Pick a template, fill in the deta
 
 | Layer | Technology |
 |-------|-----------|
-| Frontend | Next.js 15 (App Router), TypeScript |
+| Frontend | Next.js 16 (App Router), TypeScript |
 | Styling | Tailwind CSS v4, class-variance-authority |
 | Forms | React Hook Form + Zod |
 | HTTP | Axios with 401 interceptor |
@@ -73,8 +72,8 @@ Spring Boot API
 ### 1. Clone and install
 
 ```bash
-git clone https://github.com/your-username/legaldocsgpt-frontend
-cd legaldocsgpt-frontend
+git clone https://github.com/AlexBoiko412/legaladocsgpt_frontend
+cd legaladocsgpt_frontend
 npm install
 ```
 
@@ -99,6 +98,12 @@ npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000).
+
+### Production
+
+The `Dockerfile` builds a standalone Next.js server. In production the frontend is deployed together with the
+backend behind one reverse proxy (same origin). See the backend repo's
+[docs/DEPLOY.md](https://github.com/AlexBoiko412/legaladocsgpt_backend/blob/dev/docs/DEPLOY.md).
 
 ---
 

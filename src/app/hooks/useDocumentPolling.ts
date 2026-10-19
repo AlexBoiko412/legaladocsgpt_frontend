@@ -75,6 +75,7 @@ export function useDocumentPolling(jobId: string, callbacks: PollingCallbacks) {
     useEffect(() => {
         startPolling(false);
         return () => stopPolling();
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- restart polling only when the job changes
     }, [jobId]);
 
     return { statusData, error, startPolling };

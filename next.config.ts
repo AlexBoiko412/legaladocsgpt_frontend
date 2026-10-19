@@ -29,6 +29,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+    output: 'standalone',
     images: {},
     async headers() {
         return [

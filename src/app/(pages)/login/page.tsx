@@ -19,8 +19,13 @@ import { loginSchema, LoginFormData } from '@/lib/schemas';
 function LoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
-    const next = searchParams.get('next') ?? '/';
+    const rawNext = searchParams.get('next') ?? '/';
+    // relative paths only (prevents open redirect)
+    const next = rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/';
     const { refetchUser } = useUser();
+
+    const demoEmail = process.env.NEXT_PUBLIC_DEMO_EMAIL;
+    const demoPassword = process.env.NEXT_PUBLIC_DEMO_PASSWORD;
 
     const {
         register,
@@ -31,7 +36,12 @@ function LoginForm() {
 
     const onSubmit = async (data: LoginFormData) => {
         try {
-            await authApi.login(data);
+            const identifier = data.username.trim();
+            await authApi.login(
+                identifier.includes('@')
+                    ? { email: identifier, password: data.password }
+                    : { username: identifier, password: data.password }
+            );
             await refetchUser();
             router.push(next);
         } catch (err: unknown) {
@@ -48,13 +58,13 @@ function LoginForm() {
                 <Alert variant="error">{errors.root.message}</Alert>
             )}
 
-            <FormField label="Username" id="username" error={errors.username?.message} required>
+            <FormField label="Username or email" id="username" error={errors.username?.message} required>
                 <Input
                     {...register('username')}
                     id="username"
                     type="text"
                     autoComplete="username"
-                    placeholder="your_username"
+                    placeholder="your_username or you@example.com"
                     error={!!errors.username}
                     aria-describedby={errors.username ? 'username-error' : undefined}
                 />
@@ -102,6 +112,19 @@ function LoginForm() {
             </div>
 
             <GoogleAuthButton />
+
+            {demoEmail && demoPassword && (
+                <Button
+                    type="button"
+                    variant="secondary"
+                    className="w-full"
+                    size="lg"
+                    disabled={isSubmitting}
+                    onClick={() => onSubmit({ username: demoEmail, password: demoPassword })}
+                >
+                    Try the demo account
+                </Button>
+            )}
         </form>
     );
 }

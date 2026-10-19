@@ -12,7 +12,7 @@ export default function OAuth2Success() {
 
     useEffect(() => {
         refetchUser();
-    }, []);
+    }, [refetchUser]);
 
     useEffect(() => {
         if (!loading) {

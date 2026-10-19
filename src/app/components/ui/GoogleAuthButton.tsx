@@ -2,7 +2,11 @@
 
 const GOOGLE_OAUTH_URL = `${process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:8080'}/api/auth/oauth2/authorization/google`;
 
+const GOOGLE_AUTH_ENABLED = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED !== 'false';
+
 export default function GoogleAuthButton() {
+    if (!GOOGLE_AUTH_ENABLED) return null;
+
     return (
         <a
             href={GOOGLE_OAUTH_URL}
